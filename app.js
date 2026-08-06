@@ -198,11 +198,10 @@ function getFileName(
   );
 }
 
-
 /**
- * 검수 시작 버튼
+ * 엑셀 파일 읽기 시작
  */
-function handleStartButton() {
+async function handleStartButton() {
   if (
     !selectedFiles.purchase ||
     !selectedFiles.online ||
@@ -215,17 +214,61 @@ function handleStartButton() {
     return;
   }
 
+  const startButton =
+    document.getElementById(
+      'startButton'
+    );
+
   const status =
     document.getElementById(
       'status'
     );
 
+  if (startButton) {
+    startButton.disabled = true;
+    startButton.textContent =
+      '엑셀 읽는 중...';
+  }
+
   if (status) {
     status.className =
-      'status-success';
+      'status-loading';
 
     status.textContent =
-      '파일 선택 확인 완료. 다음 단계에서 엑셀 내용을 읽습니다.';
+      '발주서, 온라인, 직배 파일을 읽고 있습니다.';
+  }
+
+  try {
+    const result =
+      await readAllExcelFiles(
+        selectedFiles
+      );
+
+    excelData.purchase =
+      result.purchase;
+
+    excelData.online =
+      result.online;
+
+    excelData.direct =
+      result.direct;
+
+    renderExcelReadSummary();
+
+  } catch (error) {
+    console.error(error);
+
+    setStatusError(
+      '엑셀 읽기 오류: ' +
+        error.message
+    );
+
+  } finally {
+    if (startButton) {
+      startButton.disabled = false;
+      startButton.textContent =
+        '다시 읽기';
+    }
   }
 }
 
