@@ -9,6 +9,12 @@ const selectedFiles = {
   direct: null
 };
 
+const excelData = {
+  purchase: null,
+  online: null,
+  direct: null
+};
+
 document.addEventListener(
   'DOMContentLoaded',
   initializeApp
