@@ -1,6 +1,6 @@
 /**
  * BOBO 발주 검수 Dashboard V2
- * STEP 1: 파일 선택 상태 확인
+ * V2-01 파일 업로드
  */
 
 const selectedFiles = {
@@ -15,17 +15,17 @@ document.addEventListener(
 );
 
 function initializeApp() {
-  bindFileInput(
+  connectFileInput(
     'purchaseFile',
     'purchase'
   );
 
-  bindFileInput(
+  connectFileInput(
     'onlineFile',
     'online'
   );
 
-  bindFileInput(
+  connectFileInput(
     'directFile',
     'direct'
   );
@@ -40,14 +40,18 @@ function initializeApp() {
 
     startButton.addEventListener(
       'click',
-      handleStartCheck
+      handleStartButton
     );
   }
 
-  updateStatus();
+  updateUploadStatus();
 }
 
-function bindFileInput(
+
+/**
+ * 파일 선택창 연결
+ */
+function connectFileInput(
   inputId,
   fileType
 ) {
@@ -57,6 +61,11 @@ function bindFileInput(
     );
 
   if (!input) {
+    console.error(
+      inputId +
+        ' 요소를 찾지 못했습니다.'
+    );
+
     return;
   }
 
@@ -64,20 +73,22 @@ function bindFileInput(
     'change',
     event => {
       const file =
-        event.target.files &&
-        event.target.files[0]
-          ? event.target.files[0]
-          : null;
+        event.target.files?.[0] ||
+        null;
 
       selectedFiles[fileType] =
         file;
 
-      updateStatus();
+      updateUploadStatus();
     }
   );
 }
 
-function updateStatus() {
+
+/**
+ * 파일 선택 상태 표시
+ */
+function updateUploadStatus() {
   const status =
     document.getElementById(
       'status'
@@ -88,51 +99,93 @@ function updateStatus() {
       'startButton'
     );
 
-  const readyCount =
+  const selectedCount =
     Object.values(
       selectedFiles
     ).filter(Boolean).length;
 
-  const allReady =
-    readyCount === 3;
+  const allSelected =
+    selectedCount === 3;
 
   if (startButton) {
     startButton.disabled =
-      !allReady;
+      !allSelected;
+
+    startButton.textContent =
+      allSelected
+        ? '검수 시작'
+        : `파일 ${selectedCount}/3 선택`;
   }
 
   if (!status) {
     return;
   }
 
-  if (allReady) {
-    status.innerHTML = `
-      <strong>파일 3개 선택 완료</strong><br>
-      발주서: ${escapeHtml(
-        selectedFiles.purchase.name
-      )}<br>
-      온라인: ${escapeHtml(
-        selectedFiles.online.name
-      )}<br>
-      직배: ${escapeHtml(
-        selectedFiles.direct.name
-      )}
-    `;
-
+  if (!allSelected) {
     status.className =
-      'status-success';
+      'status-ready';
+
+    status.innerHTML = `
+      <strong>
+        현재 ${selectedCount}개 선택
+      </strong>
+      <br>
+      발주서:
+      ${getFileName('purchase')}
+      <br>
+      온라인:
+      ${getFileName('online')}
+      <br>
+      직배:
+      ${getFileName('direct')}
+    `;
 
     return;
   }
 
-  status.textContent =
-    `현재 ${readyCount}개 선택 · 파일 3개를 모두 선택해 주세요.`;
-
   status.className =
-    'status-ready';
+    'status-success';
+
+  status.innerHTML = `
+    <strong>
+      파일 3개 선택 완료
+    </strong>
+    <br>
+    발주서:
+    ${getFileName('purchase')}
+    <br>
+    온라인:
+    ${getFileName('online')}
+    <br>
+    직배:
+    ${getFileName('direct')}
+  `;
 }
 
-function handleStartCheck() {
+
+/**
+ * 파일명 표시
+ */
+function getFileName(
+  fileType
+) {
+  const file =
+    selectedFiles[fileType];
+
+  if (!file) {
+    return '선택 안 됨';
+  }
+
+  return escapeHtml(
+    file.name
+  );
+}
+
+
+/**
+ * 검수 시작 버튼
+ */
+function handleStartButton() {
   if (
     !selectedFiles.purchase ||
     !selectedFiles.online ||
@@ -151,14 +204,18 @@ function handleStartCheck() {
     );
 
   if (status) {
-    status.textContent =
-      '파일 선택 확인 완료. 다음 단계에서 엑셀 내용을 읽습니다.';
-
     status.className =
       'status-success';
+
+    status.textContent =
+      '파일 선택 확인 완료. 다음 단계에서 엑셀 내용을 읽습니다.';
   }
 }
 
+
+/**
+ * 오류 상태 표시
+ */
 function setStatusError(
   message
 ) {
@@ -171,13 +228,17 @@ function setStatusError(
     return;
   }
 
-  status.textContent =
-    message;
-
   status.className =
     'status-error';
+
+  status.textContent =
+    message;
 }
 
+
+/**
+ * HTML 안전 처리
+ */
 function escapeHtml(
   value
 ) {
