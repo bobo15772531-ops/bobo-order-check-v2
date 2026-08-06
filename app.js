@@ -268,3 +268,42 @@ function escapeHtml(
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#039;');
 }
+
+/**
+ * 업로드 파일과 읽은 엑셀 데이터 초기화
+ */
+function resetUploadedFiles() {
+  selectedFiles.purchase = null;
+  selectedFiles.online = null;
+  selectedFiles.direct = null;
+
+  excelData.purchase = null;
+  excelData.online = null;
+  excelData.direct = null;
+
+  [
+    'purchaseFile',
+    'onlineFile',
+    'directFile'
+  ].forEach(inputId => {
+    const input =
+      document.getElementById(
+        inputId
+      );
+
+    if (input) {
+      input.value = '';
+    }
+  });
+
+  const resultSection =
+    document.getElementById(
+      'resultSection'
+    );
+
+  if (resultSection) {
+    resultSection.hidden = true;
+  }
+
+  updateUploadStatus();
+}
