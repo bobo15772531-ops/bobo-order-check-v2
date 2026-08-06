@@ -50,6 +50,17 @@ function initializeApp() {
     );
   }
 
+  const resetButton =
+  document.getElementById(
+    'resetButton'
+  );
+
+if (resetButton) {
+  resetButton.addEventListener(
+    'click',
+    resetUploadedFiles
+  );
+}
   updateUploadStatus();
 }
 
