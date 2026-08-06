@@ -1,104 +1,457 @@
 <!DOCTYPE html>
 <html lang="ko">
-
 <head>
+  <meta charset="UTF-8">
 
-<meta charset="UTF-8">
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1"
+  >
 
-<meta name="viewport"
-content="width=device-width,initial-scale=1">
+  <title>
+    BOBO 발주 검수 Dashboard V2
+  </title>
 
-<title>
-BOBO 발주 검수 Dashboard V2
-</title>
-
-<link
-rel="stylesheet"
-href="style.css">
-
+  <link
+    rel="stylesheet"
+    href="style.css?v=20260806-2"
+  >
 </head>
 
 <body>
+  <main class="container">
 
-<div class="container">
+    <!-- 상단 제목 -->
+    <header class="dashboard-header">
+      <div>
+        <h1>
+          📦 BOBO 발주 검수 Dashboard V2
+        </h1>
 
-<header>
+        <p>
+          삼성 온라인 발주 검수 시스템
+        </p>
+      </div>
 
-<h1>
-📦 BOBO 발주 검수 Dashboard V2
-</h1>
+      <span class="security-badge">
+        브라우저 내부 검수
+      </span>
+    </header>
 
-<p>
-삼성 온라인 발주 검수 시스템
-</p>
 
-</header>
+    <!-- 파일 업로드 -->
+    <section class="upload-section">
+      <div class="upload-area">
 
-<section class="upload-area">
+        <article class="upload-box">
+          <div class="upload-step">
+            1
+          </div>
 
-<div class="upload-box">
+          <h2>
+            발주서
+          </h2>
 
-<h2>
-① 발주서
-</h2>
+          <p>
+            기준 파일
+          </p>
 
-<input
-type="file"
-id="purchaseFile"
-accept=".xlsx,.xls">
+          <input
+            type="file"
+            id="purchaseFile"
+            accept=".xlsx,.xls"
+          >
+        </article>
 
-</div>
 
-<div class="upload-box">
+        <article class="upload-box">
+          <div class="upload-step">
+            2
+          </div>
 
-<h2>
-② 온라인 주문
-</h2>
+          <h2>
+            온라인 주문
+          </h2>
 
-<input
-type="file"
-id="onlineFile"
-accept=".xlsx,.xls">
+          <p>
+            온라인 주문 비교
+          </p>
 
-</div>
+          <input
+            type="file"
+            id="onlineFile"
+            accept=".xlsx,.xls"
+          >
+        </article>
 
-<div class="upload-box">
 
-<h2>
-③ 직배 주문
-</h2>
+        <article class="upload-box">
+          <div class="upload-step">
+            3
+          </div>
 
-<input
-type="file"
-id="directFile"
-accept=".xlsx,.xls">
+          <h2>
+            직배 주문
+          </h2>
 
-</div>
+          <p>
+            직배 주문 비교
+          </p>
 
-</section>
+          <input
+            type="file"
+            id="directFile"
+            accept=".xlsx,.xls"
+          >
+        </article>
 
-<div class="button-area">
+      </div>
 
-<button
-id="startButton">
 
-검수 시작
+      <div class="button-area">
+        <button
+          id="startButton"
+          type="button"
+        >
+          파일 0/3 선택
+        </button>
 
-</button>
+        <button
+          id="resetButton"
+          type="button"
+          class="reset-button"
+        >
+          초기화
+        </button>
+      </div>
 
-</div>
 
-<div
-id="status">
+      <div
+        id="status"
+        class="status-ready"
+      >
+        파일을 업로드하세요.
+      </div>
+    </section>
 
-파일을 업로드하세요.
 
-</div>
+    <!-- 검수 결과 -->
+    <section
+      id="resultSection"
+      class="result-section"
+      hidden
+    >
 
-</div>
+      <div class="section-title-row">
+        <div>
+          <h2>
+            검수 결과
+          </h2>
 
-<script src="app.js"></script>
+          <p>
+            KPI 카드를 누르면 해당 오류만 확인할 수 있습니다.
+          </p>
+        </div>
 
+        <button
+          id="downloadButton"
+          type="button"
+          class="download-button"
+        >
+          검수 결과 엑셀 다운로드
+        </button>
+      </div>
+
+
+      <!-- KPI -->
+      <section class="kpi-grid">
+
+        <button
+          type="button"
+          class="kpi-card"
+          data-filter="all"
+        >
+          <span class="kpi-label">
+            총 검수 항목
+          </span>
+
+          <strong
+            id="totalCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+
+        <button
+          type="button"
+          class="kpi-card kpi-normal"
+          data-filter="normal"
+        >
+          <span class="kpi-label">
+            정상
+          </span>
+
+          <strong
+            id="normalCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+
+        <button
+          type="button"
+          class="kpi-card kpi-error"
+          data-filter="onlineMissing"
+        >
+          <span class="kpi-label">
+            온라인 누락
+          </span>
+
+          <strong
+            id="onlineMissingCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+
+        <button
+          type="button"
+          class="kpi-card kpi-error"
+          data-filter="directMissing"
+        >
+          <span class="kpi-label">
+            직배 누락
+          </span>
+
+          <strong
+            id="directMissingCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+
+        <button
+          type="button"
+          class="kpi-card kpi-warning"
+          data-filter="modelMismatch"
+        >
+          <span class="kpi-label">
+            모델 불일치
+          </span>
+
+          <strong
+            id="modelMismatchCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+
+        <button
+          type="button"
+          class="kpi-card kpi-warning"
+          data-filter="quantityMismatch"
+        >
+          <span class="kpi-label">
+            수량 불일치
+          </span>
+
+          <strong
+            id="quantityMismatchCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+
+        <button
+          type="button"
+          class="kpi-card kpi-warning"
+          data-filter="duplicate"
+        >
+          <span class="kpi-label">
+            중복 의심
+          </span>
+
+          <strong
+            id="duplicateCount"
+            class="kpi-value"
+          >
+            0건
+          </strong>
+        </button>
+
+      </section>
+
+
+      <!-- 필터 및 검색 -->
+      <section class="result-control-panel">
+
+        <div class="filter-buttons">
+          <button
+            type="button"
+            class="filter-button active"
+            data-filter="all"
+          >
+            전체
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="error"
+          >
+            오류만
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="normal"
+          >
+            정상만
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="onlineMissing"
+          >
+            온라인 누락
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="directMissing"
+          >
+            직배 누락
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="modelMismatch"
+          >
+            모델 불일치
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="quantityMismatch"
+          >
+            수량 불일치
+          </button>
+
+          <button
+            type="button"
+            class="filter-button"
+            data-filter="duplicate"
+          >
+            중복
+          </button>
+        </div>
+
+
+        <div class="search-area">
+          <input
+            id="resultSearch"
+            type="search"
+            placeholder="판매번호, 주문번호, 모델명 검색"
+          >
+        </div>
+
+      </section>
+
+
+      <div class="result-summary">
+        <span id="resultCountText">
+          검색 결과 0건
+        </span>
+      </div>
+
+
+      <!-- 결과표 -->
+      <div class="table-wrapper">
+        <table class="result-table">
+          <thead>
+            <tr>
+              <th>
+                판정
+              </th>
+
+              <th>
+                오류 사유
+              </th>
+
+              <th>
+                비교 대상
+              </th>
+
+              <th>
+                판매번호
+              </th>
+
+              <th>
+                주문번호
+              </th>
+
+              <th>
+                발주 모델
+              </th>
+
+              <th>
+                비교 모델
+              </th>
+
+              <th>
+                발주 수량
+              </th>
+
+              <th>
+                비교 수량
+              </th>
+
+              <th>
+                발주서 행
+              </th>
+            </tr>
+          </thead>
+
+          <tbody id="resultTableBody">
+            <tr>
+              <td
+                colspan="10"
+                class="empty-table"
+              >
+                검수를 실행하면 결과가 표시됩니다.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </section>
+
+  </main>
+
+
+  <!-- 엑셀 라이브러리 -->
+  <script
+    src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"
+  ></script>
+
+  <script src="app.js?v=20260806-2"></script>
 </body>
-
 </html>
