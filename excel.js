@@ -366,3 +366,4 @@ function normalizeExcelHeader(
     .replace(/\s+/g, '')
     .toUpperCase();
 }
+
