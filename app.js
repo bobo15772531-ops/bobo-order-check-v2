@@ -436,3 +436,4 @@ function formatNumber(
       Number(value) || 0
     );
 }
+
