@@ -2,120 +2,516 @@
   box-sizing: border-box;
 }
 
+:root {
+  --primary: #2563eb;
+  --primary-dark: #1d4ed8;
+
+  --success: #059669;
+  --success-soft: #ecfdf5;
+
+  --warning: #d97706;
+  --warning-soft: #fff7ed;
+
+  --error: #dc2626;
+  --error-soft: #fef2f2;
+
+  --text: #172033;
+  --text-sub: #667085;
+
+  --border: #dbe2ee;
+  --background: #f3f6fb;
+  --panel: #ffffff;
+}
+
 body {
   margin: 0;
-  background: #f3f6fb;
-  color: #172033;
+
+  background: var(--background);
+  color: var(--text);
+
   font-family:
     Arial,
     "Noto Sans KR",
     sans-serif;
 }
 
+button,
+input {
+  font: inherit;
+}
+
 .container {
-  width: min(1180px, 94%);
+  width: min(1400px, 95%);
   margin: 0 auto;
-  padding: 40px 0 60px;
+  padding: 34px 0 70px;
 }
 
-header {
-  margin-bottom: 28px;
+
+/* 상단 */
+
+.dashboard-header {
+  margin-bottom: 26px;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
 }
 
-header h1 {
+.dashboard-header h1 {
   margin: 0;
-  font-size: 32px;
+
+  font-size: 30px;
+  font-weight: 900;
+}
+
+.dashboard-header p {
+  margin: 8px 0 0;
+
+  color: var(--text-sub);
+  font-size: 14px;
+}
+
+.security-badge {
+  padding: 10px 16px;
+
+  border-radius: 999px;
+
+  background: #eaf2ff;
+  color: var(--primary);
+
+  font-size: 13px;
   font-weight: 800;
 }
 
-header p {
-  margin: 10px 0 0;
-  color: #667085;
-  font-size: 15px;
+
+/* 업로드 */
+
+.upload-section,
+.result-section {
+  padding: 24px;
+
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+
+  box-shadow:
+    0 10px 30px rgba(15, 23, 42, 0.06);
 }
 
 .upload-area {
   display: grid;
+
   grid-template-columns:
     repeat(3, minmax(0, 1fr));
-  gap: 20px;
+
+  gap: 18px;
 }
 
 .upload-box {
-  min-height: 210px;
-  padding: 28px 24px;
+  min-height: 200px;
+  padding: 24px;
 
   display: flex;
   flex-direction: column;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+
+  border: 2px dashed #cfd7e6;
+  border-radius: 16px;
 
   background: #ffffff;
-  border: 2px dashed #cfd7e6;
-  border-radius: 18px;
+  text-align: center;
+}
 
-  box-shadow:
-    0 8px 24px rgba(15, 23, 42, 0.06);
+.upload-step {
+  width: 34px;
+  height: 34px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+
+  background: var(--primary);
+  color: #ffffff;
+
+  font-size: 14px;
+  font-weight: 900;
 }
 
 .upload-box h2 {
-  margin: 0 0 20px;
-  font-size: 20px;
+  margin: 16px 0 6px;
+
+  font-size: 18px;
+}
+
+.upload-box p {
+  margin: 0 0 16px;
+
+  color: var(--text-sub);
+  font-size: 13px;
 }
 
 .upload-box input[type="file"] {
   width: 100%;
-  padding: 12px;
+  padding: 10px;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
 
   background: #f8fafc;
-  border: 1px solid #d8deea;
-  border-radius: 10px;
 }
 
 .button-area {
-  margin-top: 28px;
-  text-align: center;
+  margin-top: 22px;
+
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+}
+
+#startButton,
+.reset-button,
+.download-button {
+  border: 0;
+  border-radius: 10px;
+
+  cursor: pointer;
+  font-weight: 800;
 }
 
 #startButton {
   min-width: 180px;
-  padding: 14px 28px;
+  padding: 13px 24px;
 
-  border: 0;
-  border-radius: 12px;
-
-  background: #2563eb;
+  background: var(--primary);
   color: #ffffff;
 
-  font-size: 17px;
-  font-weight: 800;
-
-  cursor: pointer;
+  font-size: 16px;
 }
 
-#startButton:hover {
-  background: #1d4ed8;
+#startButton:hover:not(:disabled) {
+  background: var(--primary-dark);
+}
+
+#startButton:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.reset-button {
+  padding: 13px 22px;
+
+  border: 1px solid var(--border);
+
+  background: #ffffff;
+  color: var(--text);
 }
 
 #status {
-  margin-top: 22px;
-  padding: 16px 18px;
+  margin-top: 20px;
+  padding: 15px 18px;
 
-  background: #ffffff;
-  border: 1px solid #dbe2ee;
-  border-radius: 12px;
+  border: 1px solid var(--border);
+  border-radius: 11px;
 
-  color: #475467;
+  font-size: 14px;
   font-weight: 700;
+  line-height: 1.7;
   text-align: center;
 }
 
-@media (max-width: 860px) {
+.status-ready {
+  background: #ffffff;
+  color: #475467;
+}
+
+.status-success {
+  background: var(--success-soft);
+  border-color: #86efac !important;
+  color: #047857;
+}
+
+.status-error {
+  background: var(--error-soft);
+  border-color: #fca5a5 !important;
+  color: var(--error);
+}
+
+.status-loading {
+  background: var(--warning-soft);
+  border-color: #fdba74 !important;
+  color: #c2410c;
+}
+
+
+/* 결과 */
+
+.result-section {
+  margin-top: 24px;
+}
+
+.section-title-row {
+  margin-bottom: 22px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.section-title-row h2 {
+  margin: 0;
+
+  font-size: 23px;
+}
+
+.section-title-row p {
+  margin: 7px 0 0;
+
+  color: var(--text-sub);
+  font-size: 13px;
+}
+
+.download-button {
+  padding: 12px 18px;
+
+  background: var(--success);
+  color: #ffffff;
+}
+
+
+/* KPI */
+
+.kpi-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(7, minmax(0, 1fr));
+
+  gap: 14px;
+}
+
+.kpi-card {
+  min-height: 118px;
+  padding: 18px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--primary);
+  border-radius: 13px;
+
+  background: #ffffff;
+  color: var(--text);
+
+  cursor: pointer;
+  text-align: left;
+}
+
+.kpi-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow:
+    0 8px 20px rgba(15, 23, 42, 0.08);
+}
+
+.kpi-normal {
+  border-top-color: var(--success);
+}
+
+.kpi-warning {
+  border-top-color: var(--warning);
+}
+
+.kpi-error {
+  border-top-color: var(--error);
+}
+
+.kpi-label {
+  color: var(--text-sub);
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.kpi-value {
+  font-size: 27px;
+  font-weight: 900;
+}
+
+
+/* 필터와 검색 */
+
+.result-control-panel {
+  margin-top: 22px;
+  padding: 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+
+  border: 1px solid var(--border);
+  border-radius: 13px;
+
+  background: #f8fafc;
+}
+
+.filter-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.filter-button {
+  padding: 9px 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 8px;
+
+  background: #ffffff;
+  color: var(--text);
+
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.filter-button.active {
+  border-color: var(--primary);
+
+  background: var(--primary);
+  color: #ffffff;
+}
+
+.search-area input {
+  width: 280px;
+  padding: 11px 13px;
+
+  border: 1px solid var(--border);
+  border-radius: 9px;
+
+  background: #ffffff;
+}
+
+.result-summary {
+  margin: 16px 0 10px;
+
+  color: var(--text-sub);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+/* 테이블 */
+
+.table-wrapper {
+  overflow-x: auto;
+
+  border: 1px solid var(--border);
+  border-radius: 12px;
+}
+
+.result-table {
+  width: 100%;
+  min-width: 1150px;
+
+  border-collapse: collapse;
+
+  background: #ffffff;
+}
+
+.result-table th {
+  padding: 13px 12px;
+
+  background: #eef3fb;
+  border-bottom: 1px solid var(--border);
+
+  color: #344054;
+
+  font-size: 13px;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.result-table td {
+  padding: 13px 12px;
+
+  border-bottom: 1px solid #edf0f5;
+
+  font-size: 13px;
+  vertical-align: middle;
+}
+
+.result-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.empty-table {
+  padding: 45px !important;
+
+  color: var(--text-sub);
+  text-align: center !important;
+}
+
+
+/* 반응형 */
+
+@media (max-width: 1200px) {
+  .kpi-grid {
+    grid-template-columns:
+      repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 900px) {
   .upload-area {
     grid-template-columns: 1fr;
   }
 
-  header h1 {
-    font-size: 26px;
+  .kpi-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .result-control-panel,
+  .section-title-row {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .search-area input {
+    width: 100%;
+  }
+}
+
+@media (max-width: 560px) {
+  .container {
+    width: 94%;
+    padding-top: 24px;
+  }
+
+  .dashboard-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-header h1 {
+    font-size: 24px;
+  }
+
+  .kpi-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .upload-section,
+  .result-section {
+    padding: 17px;
   }
 }
