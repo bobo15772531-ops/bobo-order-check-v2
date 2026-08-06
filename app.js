@@ -350,3 +350,89 @@ function resetUploadedFiles() {
 
   updateUploadStatus();
 }
+/**
+ * 엑셀 읽기 결과 표시
+ */
+function renderExcelReadSummary() {
+  const status =
+    document.getElementById(
+      'status'
+    );
+
+  if (!status) {
+    return;
+  }
+
+  status.className =
+    'status-success';
+
+  status.innerHTML = `
+    <strong>
+      엑셀 3개 읽기 완료
+    </strong>
+
+    <br><br>
+
+    발주서:
+    ${formatNumber(
+      excelData.purchase.rowCount
+    )}행
+
+    <br>
+    헤더:
+    ${escapeHtml(
+      excelData.purchase
+        .originalHeaders
+        .filter(Boolean)
+        .join(', ')
+    )}
+
+    <br><br>
+
+    온라인:
+    ${formatNumber(
+      excelData.online.rowCount
+    )}행
+
+    <br>
+    헤더:
+    ${escapeHtml(
+      excelData.online
+        .originalHeaders
+        .filter(Boolean)
+        .join(', ')
+    )}
+
+    <br><br>
+
+    직배:
+    ${formatNumber(
+      excelData.direct.rowCount
+    )}행
+
+    <br>
+    헤더:
+    ${escapeHtml(
+      excelData.direct
+        .originalHeaders
+        .filter(Boolean)
+        .join(', ')
+    )}
+  `;
+}
+
+
+/**
+ * 숫자 천 단위 표시
+ */
+function formatNumber(
+  value
+) {
+  return new Intl
+    .NumberFormat(
+      'ko-KR'
+    )
+    .format(
+      Number(value) || 0
+    );
+}
