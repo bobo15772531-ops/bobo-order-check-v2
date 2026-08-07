@@ -779,17 +779,18 @@ function standardizeExcelRows(
             standardRow.model
           ),
 
-        quantity:
-          normalizeQuantity(
-            standardRow.quantity
-          )
-    
-      settlement:
+quantity:
+  normalizeQuantity(
+    standardRow.quantity
+  ),
+
+settlement:
   normalizeSettlementAmount(
     standardRow.settlement
   )
- );
-      return standardRow;
+};
+
+return standardRow;
     }
   );
 }
