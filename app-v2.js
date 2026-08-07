@@ -17,6 +17,7 @@ const excelData = {
 };
 
 let comparisonResults = [];
+let activeComparisonFilter = 'all';
 
 document.addEventListener(
   'DOMContentLoaded',
