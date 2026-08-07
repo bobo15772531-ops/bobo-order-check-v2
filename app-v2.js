@@ -303,6 +303,16 @@ excelData.direct.standardRows =
     'direct'
   );
 
+    excelData.policy.standardRows =
+  standardizePolicyRows(
+    excelData.policy
+  );
+
+console.log(
+  '정책가 표준화:',
+  excelData.policy.standardRows
+);
+    
     comparisonResults =
   runOrderComparison(
     excelData.purchase
