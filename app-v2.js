@@ -1378,6 +1378,17 @@ function renderComparisonTable(
     result.priceStatus ===
     '정책가 없음'
       ? '-'
+      : formatCurrency(
+          result.policyTotalPrice
+        )
+  }
+</td>
+
+<td>
+  ${
+    result.priceStatus ===
+    '정책가 없음'
+      ? '-'
       : formatSignedCurrency(
           result.priceDifference
         )
