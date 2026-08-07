@@ -2355,28 +2355,47 @@ function attachPolicyPriceComparison() {
               .policyPrice
           ) || 0;
 
-        const priceDifference =
-          settlementAmount -
-          policyPrice;
+        const purchaseQuantity =
+  Number(
+    purchaseRow.normalized.quantity
+  ) || 1;
 
-        const priceDifferenceRate =
-          policyPrice > 0
-            ? (
-                priceDifference /
-                policyPrice
-              ) * 100
-            : 0;
+/*
+ * 정책 기준금액 =
+ * 1대 순판가 × 발주수량
+ */
+const policyTotalPrice =
+  policyPrice *
+  purchaseQuantity;
 
-        let priceStatus =
-          '가격 확인';
+const priceDifference =
+  settlementAmount -
+  policyTotalPrice;
 
-        if (
-          priceDifference === 0
-        ) {
-          priceStatus =
-            '정상';
-        }
+const priceDifferenceRate =
+  policyTotalPrice > 0
+    ? (
+        priceDifference /
+        policyTotalPrice
+      ) * 100
+    : 0;
 
+let priceStatus =
+  '정상';
+
+if (
+  priceDifference > 0
+) {
+  priceStatus =
+    '정산가 높음';
+
+} else if (
+  priceDifference < 0
+) {
+  priceStatus =
+    '정산가 낮음';
+}
+        
         return {
           ...result,
 
