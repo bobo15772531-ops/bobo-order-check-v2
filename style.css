@@ -834,3 +834,20 @@ body {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* 가격 차이금액 색상 */
+
+.price-difference-high {
+  color: #2563eb;
+  font-weight: 800;
+}
+
+.price-difference-low {
+  color: #dc2626;
+  font-weight: 800;
+}
+
+.price-difference-normal {
+  color: #059669;
+  font-weight: 800;
+}
