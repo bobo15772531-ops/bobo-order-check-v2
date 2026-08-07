@@ -8,10 +8,13 @@ console.log(
  */
 
 /**
- * 전체 검수 실행
+ * 전체 발주 검수 실행
  *
- * 발주서에 명시된 온라인 주문번호와
- * 직배 주문번호만 비교 대상으로 사용합니다.
+ * 온라인 주문번호:
+ * 온라인 파일 우선 → 없으면 직배 파일 검색
+ *
+ * 직배 주문번호:
+ * 직배 파일 우선 → 없으면 온라인 파일 검색
  */
 function runOrderComparison(
   purchaseRows,
@@ -32,12 +35,6 @@ function runOrderComparison(
       'direct'
     );
 
-  const usedOnlineRowIds =
-    new Set();
-
-  const usedDirectRowIds =
-    new Set();
-
   purchaseRows.forEach(
     purchaseRow => {
       const onlineOrderNumber =
@@ -49,67 +46,63 @@ function runOrderComparison(
           .directOrderNumber;
 
       /*
-       * 발주서 온라인 주문번호가 있는 행만
-       * 온라인 주문 파일과 비교합니다.
+       * 온라인 주문번호가 있으면
+       * 온라인 우선, 직배 보조 검색
        */
       if (onlineOrderNumber) {
         results.push(
           comparePurchaseRow({
             purchaseRow,
-            sourceType:
-              'online',
-
             expectedOrderNumber:
               onlineOrderNumber,
 
-            sourceIndex:
+            preferredType:
+              'online',
+
+            primaryIndex:
               onlineIndex,
 
-            usedRowIds:
-              usedOnlineRowIds
+            secondaryIndex:
+              directIndex
           })
         );
       }
 
       /*
-       * 발주서 직배 주문번호가 있는 행만
-       * 직배 주문 파일과 비교합니다.
+       * 직배 주문번호가 있으면
+       * 직배 우선, 온라인 보조 검색
        */
       if (directOrderNumber) {
+        /*
+         * 온라인 주문번호와 직배 주문번호가
+         * 완전히 같은 경우에는 중복 검수를 막습니다.
+         */
+        if (
+          directOrderNumber ===
+          onlineOrderNumber
+        ) {
+          return;
+        }
+
         results.push(
           comparePurchaseRow({
             purchaseRow,
-            sourceType:
-              'direct',
-
             expectedOrderNumber:
               directOrderNumber,
 
-            sourceIndex:
+            preferredType:
+              'direct',
+
+            primaryIndex:
               directIndex,
 
-            usedRowIds:
-              usedDirectRowIds
+            secondaryIndex:
+              onlineIndex
           })
         );
       }
-
-      /*
-       * 온라인 주문번호와 직배 주문번호가
-       * 모두 없는 발주서 행은 검수 대상에서 제외합니다.
-       *
-       * 일반 주문번호로 온라인·직배를 찾지 않습니다.
-       */
     }
   );
-
-  /*
-   * 온라인·직배 파일의 나머지 행을
-   * 자동으로 발주서 누락 처리하지 않습니다.
-   *
-   * 이 파일들은 당일 발주서보다 더 넓은
-   * 기간이나 주문 범위를 포함할 수 있기 때문입니다.
-   */
 
   return results;
 }
