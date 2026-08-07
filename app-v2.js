@@ -1776,7 +1776,7 @@ function downloadComparisonExcel() {
     comparisonResults.length === 0
   ) {
     alert(
-      '먼저 파일 4개를 업로드하고 검수를 실행해 주세요.'
+      '먼저 파일 3개를 업로드하고 검수를 실행해 주세요.'
     );
 
     return;
