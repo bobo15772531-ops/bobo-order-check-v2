@@ -1725,6 +1725,52 @@ function formatCurrency(
       Number(value) || 0
     ) + '원';
 }
+/**
+ * 차이금액 표시
+ */
+function formatSignedCurrency(
+  value
+) {
+  const numberValue =
+    Number(value) || 0;
+
+  const sign =
+    numberValue > 0
+      ? '+'
+      : '';
+
+  return (
+    sign +
+    new Intl.NumberFormat(
+      'ko-KR'
+    ).format(
+      numberValue
+    ) +
+    '원'
+  );
+}
+
+
+/**
+ * 차이율 표시
+ */
+function formatPercentage(
+  value
+) {
+  const numberValue =
+    Number(value) || 0;
+
+  const sign =
+    numberValue > 0
+      ? '+'
+      : '';
+
+  return (
+    sign +
+    numberValue.toFixed(2) +
+    '%'
+  );
+}
 
 /**
  * 검수 결과 엑셀 다운로드
