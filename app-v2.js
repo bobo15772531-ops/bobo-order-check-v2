@@ -1384,7 +1384,17 @@ function renderComparisonTable(
   }
 </td>
 
-<td>
+<td
+  class="${
+    result.priceStatus === '정책가 없음'
+      ? ''
+      : result.priceDifference > 0
+        ? 'price-difference-high'
+        : result.priceDifference < 0
+          ? 'price-difference-low'
+          : 'price-difference-normal'
+  }"
+>
   ${
     result.priceStatus ===
     '정책가 없음'
