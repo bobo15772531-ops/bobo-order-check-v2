@@ -366,17 +366,10 @@ async function readAllExcelFiles(
       'direct'
     );
 
-  const policy =
-    await readExcelFile(
-      files.policy,
-      'policy'
-    );
-
   return {
     purchase,
     online,
-    direct,
-    policy
+    direct
   };
 }
 
