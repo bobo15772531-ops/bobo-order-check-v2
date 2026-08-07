@@ -395,11 +395,13 @@ excelData.policy = null;
   comparisonResults = [];
 activeComparisonFilter = 'all';
 
-  [
-    'purchaseFile',
-    'onlineFile',
-    'directFile'
-  ].forEach(inputId => {
+ [
+  'purchaseFile',
+  'onlineFile',
+  'directFile',
+  'policyFile'
+]
+   .forEach(inputId => {
     const input =
       document.getElementById(
         inputId
