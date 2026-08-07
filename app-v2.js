@@ -778,7 +778,6 @@ function standardizeExcelRows(
           normalizeModelName(
             standardRow.model
           ),
-
 quantity:
   normalizeQuantity(
     standardRow.quantity
