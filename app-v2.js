@@ -325,6 +325,13 @@ console.log(
       .standardRows
   );
 
+    attachPolicyPriceComparison();
+
+console.log(
+  '가격 비교 포함 결과:',
+  comparisonResults
+);
+    
 console.log(
   '검수 결과:',
   comparisonResults
