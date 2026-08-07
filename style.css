@@ -545,3 +545,44 @@ input {
   color: #b45309;
   background: #fef3c7;
 }
+
+/* ========================================
+   BOBO Dashboard V2 - 3개 업로드 화면 정렬
+======================================== */
+
+.upload-area {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+  gap: 18px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.upload-box {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 메인 컨텐츠 가운데 정렬 */
+.container,
+.main-container,
+.dashboard-container {
+  width: min(1400px, calc(100% - 40px));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* 결과표는 열이 많으므로 가로 스크롤 허용 */
+.table-wrapper,
+.result-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* 화면이 좁아질 때 */
+@media (max-width: 900px) {
+  .upload-area {
+    grid-template-columns: 1fr !important;
+  }
+}
