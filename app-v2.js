@@ -11,8 +11,7 @@ const POLICY_API_URL =
 const selectedFiles = {
   purchase: null,
   online: null,
-  direct: null,
-  policy: null
+  direct: null
 };
 
 const excelData = {
@@ -46,11 +45,7 @@ function initializeApp() {
     'direct'
   );
 
-  connectFileInput(
-  'policyFile',
-  'policy'
-);
-  
+ 
   const startButton =
     document.getElementById(
       'startButton'
@@ -160,7 +155,7 @@ function updateUploadStatus() {
     startButton.textContent =
       allSelected
         ? '검수 시작'
-        : `파일 ${selectedCount}/4 선택`;
+        : `파일 ${selectedCount}/3 선택`;
   }
 
   if (!status) {
