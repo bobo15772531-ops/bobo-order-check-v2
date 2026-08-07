@@ -783,13 +783,12 @@ function standardizeExcelRows(
           normalizeQuantity(
             standardRow.quantity
           )
-      };
-
+    
       settlement:
   normalizeSettlementAmount(
     standardRow.settlement
   )
-
+ );
       return standardRow;
     }
   );
