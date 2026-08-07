@@ -1940,10 +1940,33 @@ function downloadComparisonExcel() {
               ) || 0,
 
             정산금액:
-              settlementAmount,
+  settlementAmount,
 
-            발주서행:
-              result.purchaseRowNumber || '',
+적용순판가:
+  Number(
+    result.policyPrice
+  ) || 0,
+
+정책기준금액:
+  Number(
+    result.policyTotalPrice
+  ) || 0,
+
+차이금액:
+  Number(
+    result.priceDifference
+  ) || 0,
+
+차이율:
+  Number(
+    result.priceDifferenceRate
+  ) || 0,
+
+가격판정:
+  result.priceStatus || '',
+
+발주서행:
+  result.purchaseRowNumber || '',
 
             비교파일행:
               result.compareRowNumbers || ''
