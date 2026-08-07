@@ -201,6 +201,9 @@ function updateUploadStatus() {
     <br>
     직배:
     ${getFileName('direct')}
+    <br>
+정책가:
+${getFileName('policy')}
   `;
 }
 
