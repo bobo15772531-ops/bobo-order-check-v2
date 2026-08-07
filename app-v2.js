@@ -444,7 +444,7 @@ function renderExcelReadSummary() {
 
   status.innerHTML = `
     <strong>
-      엑셀 3개 읽기 완료
+      엑셀 4개 읽기 완료
     </strong>
 
     <br><br>
@@ -494,6 +494,22 @@ function renderExcelReadSummary() {
         .filter(Boolean)
         .join(', ')
     )}
+
+    <br><br>
+
+정책가:
+${formatNumber(
+  excelData.policy.rowCount
+)}행
+
+<br>
+
+헤더:
+${escapeHtml(
+  excelData.policy.originalHeaders
+    .filter(Boolean)
+    .join(', ')
+)}
   `;
 }
 
