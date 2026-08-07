@@ -1713,18 +1713,6 @@ function formatCurrency(
       Number(value) || 0
     ) + '원';
 }
-
-function formatCurrency(
-  value
-) {
-  return new Intl
-    .NumberFormat(
-      'ko-KR'
-    )
-    .format(
-      Number(value) || 0
-    ) + '원';
-}
 /**
  * 차이금액 표시
  */
