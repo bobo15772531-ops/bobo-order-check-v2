@@ -2427,3 +2427,100 @@ function getPurchaseRowByExcelRowNumber(
     null
   );
 }
+
+/**
+ * 정책가 RawData API 자동 로딩
+ */
+async function loadPolicyDataFromApi() {
+  const response =
+    await fetch(
+      POLICY_API_URL,
+      {
+        method: 'GET',
+        cache: 'no-store'
+      }
+    );
+
+  if (!response.ok) {
+    throw new Error(
+      '정책가 API 호출 실패: ' +
+      response.status
+    );
+  }
+
+  const data =
+    await response.json();
+
+  if (
+    !data ||
+    data.success !== true
+  ) {
+    throw new Error(
+      data &&
+      data.message
+        ? data.message
+        : '정책가 데이터를 불러오지 못했습니다.'
+    );
+  }
+
+  if (
+    !Array.isArray(
+      data.rows
+    )
+  ) {
+    throw new Error(
+      '정책가 API 응답 형식이 올바르지 않습니다.'
+    );
+  }
+
+  const originalHeaders = [
+    '정책월',
+    '카테고리',
+    '원본시트',
+    '모델명',
+    '적용순판가',
+    '선택기준',
+    '운영'
+  ];
+
+  const headers =
+    originalHeaders.map(
+      normalizeExcelHeader
+    );
+
+  const rawRows =
+    data.rows.map(
+      row => [
+        row.policyMonth || '',
+        row.category || '',
+        '',
+        row.model || '',
+        row.policyPrice || 0,
+        row.selectionReason || '',
+        row.operation || ''
+      ]
+    );
+
+  return {
+    fileType:
+      'policy',
+
+    fileName:
+      '정책가 API 자동연동',
+
+    sheetName:
+      '정책가_RawData',
+
+    headerRowNumber:
+      1,
+
+    originalHeaders,
+
+    headers,
+
+    rowCount:
+      rawRows.length,
+
+    rawRows
+  };
+}
