@@ -230,17 +230,18 @@ function getFileName(
  * 엑셀 파일 읽기 시작
  */
 async function handleStartButton() {
-  if (
-    !selectedFiles.purchase ||
-    !selectedFiles.online ||
-    !selectedFiles.direct
-  ) {
-    setStatusError(
-      '파일 3개를 모두 선택해 주세요.'
-    );
+ if (
+  !selectedFiles.purchase ||
+  !selectedFiles.online ||
+  !selectedFiles.direct ||
+  !selectedFiles.policy
+) {
+  setStatusError(
+    '파일 4개를 모두 선택해 주세요.'
+  );
 
-    return;
-  }
+  return;
+}
 
   const startButton =
     document.getElementById(
