@@ -1141,3 +1141,175 @@ function setTextContent(
       value;
   }
 }
+
+/**
+ * 결과 필터·검색 이벤트 연결
+ */
+function bindComparisonResultEvents() {
+  document
+    .querySelectorAll(
+      '.filter-button'
+    )
+    .forEach(button => {
+      button.addEventListener(
+        'click',
+        () => {
+          activeComparisonFilter =
+            button.dataset.filter ||
+            'all';
+
+          updateActiveFilterButton();
+          renderFilteredComparisonResults();
+        }
+      );
+    });
+
+  document
+    .querySelectorAll(
+      '.kpi-card'
+    )
+    .forEach(card => {
+      card.addEventListener(
+        'click',
+        () => {
+          activeComparisonFilter =
+            card.dataset.filter ||
+            'all';
+
+          updateActiveFilterButton();
+          renderFilteredComparisonResults();
+        }
+      );
+    });
+
+  const searchInput =
+    document.getElementById(
+      'resultSearch'
+    );
+
+  if (searchInput) {
+    searchInput.addEventListener(
+      'input',
+      renderFilteredComparisonResults
+    );
+  }
+}
+
+
+/**
+ * 활성 필터 버튼 표시
+ */
+function updateActiveFilterButton() {
+  document
+    .querySelectorAll(
+      '.filter-button'
+    )
+    .forEach(button => {
+      button.classList.toggle(
+        'active',
+        button.dataset.filter ===
+          activeComparisonFilter
+      );
+    });
+}
+
+
+/**
+ * 필터와 검색 조건을 적용해 출력
+ */
+function renderFilteredComparisonResults() {
+  const searchInput =
+    document.getElementById(
+      'resultSearch'
+    );
+
+  const searchKeyword =
+    normalizeComparisonSearchText(
+      searchInput
+        ? searchInput.value
+        : ''
+    );
+
+  const filteredResults =
+    comparisonResults.filter(result => {
+      if (
+        !matchesComparisonFilter(
+          result,
+          activeComparisonFilter
+        )
+      ) {
+        return false;
+      }
+
+      if (!searchKeyword) {
+        return true;
+      }
+
+      const searchableText =
+        normalizeComparisonSearchText(
+          [
+            result.saleNumber,
+            result.orderNumber,
+            result.purchaseModel,
+            result.compareModel,
+            result.reason,
+            result.target
+          ].join(' ')
+        );
+
+      return searchableText.includes(
+        searchKeyword
+      );
+    });
+
+  renderComparisonTable(
+    filteredResults
+  );
+}
+
+
+/**
+ * 결과 유형 필터 판정
+ */
+function matchesComparisonFilter(
+  result,
+  filter
+) {
+  if (
+    !filter ||
+    filter === 'all'
+  ) {
+    return true;
+  }
+
+  if (filter === 'error') {
+    return result.status === 'error';
+  }
+
+  if (filter === 'normal') {
+    return result.status === 'normal';
+  }
+
+  return (
+    Array.isArray(
+      result.categories
+    ) &&
+    result.categories.includes(
+      filter
+    )
+  );
+}
+
+
+/**
+ * 검색용 문자 정리
+ */
+function normalizeComparisonSearchText(
+  value
+) {
+  return String(
+    value ?? ''
+  )
+    .replace(/\s+/g, '')
+    .toUpperCase();
+}
