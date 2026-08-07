@@ -956,9 +956,20 @@ function renderComparisonResults() {
     ) + '건'
   );
 
-  renderComparisonTable(
-    comparisonResults
+activeComparisonFilter =
+  'all';
+
+const searchInput =
+  document.getElementById(
+    'resultSearch'
   );
+
+if (searchInput) {
+  searchInput.value = '';
+}
+
+updateActiveFilterButton();
+renderFilteredComparisonResults();
 }
 
 
