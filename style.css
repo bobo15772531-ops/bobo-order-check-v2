@@ -704,3 +704,133 @@ main {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ========================================
+   Dashboard 전체 폭 / 가운데 정렬 보정
+======================================== */
+
+html,
+body {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  overflow-x: hidden;
+}
+
+/* 상단 / 업로드 / 결과 영역 공통 폭 */
+.dashboard-header,
+.upload-section,
+.result-section {
+  width: min(1500px, calc(100% - 48px));
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* 업로드 3칸 균등 */
+.upload-area {
+  display: grid !important;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px;
+  width: 100%;
+}
+
+.upload-box {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 버튼 중앙 정렬 */
+.button-area {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+}
+
+/* KPI 영역 */
+.kpi-grid {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 검색 / 필터 */
+.result-control-panel {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 결과표만 가로 스크롤 */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  box-sizing: border-box;
+}
+
+/* 16열 결과표 최소 폭 */
+.result-table {
+  width: 100%;
+  min-width: 1650px;
+  border-collapse: collapse;
+}
+
+/* 제목 / 내용 정렬 */
+.result-table th {
+  white-space: nowrap;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.result-table td {
+  vertical-align: middle;
+}
+
+/* 모델명 열은 너무 좁아지지 않도록 */
+.result-table th:nth-child(6),
+.result-table th:nth-child(7),
+.result-table td:nth-child(6),
+.result-table td:nth-child(7) {
+  min-width: 150px;
+}
+
+/* 금액 관련 열 */
+.result-table th:nth-child(10),
+.result-table th:nth-child(11),
+.result-table th:nth-child(12),
+.result-table th:nth-child(13),
+.result-table td:nth-child(10),
+.result-table td:nth-child(11),
+.result-table td:nth-child(12),
+.result-table td:nth-child(13) {
+  min-width: 120px;
+  white-space: nowrap;
+  text-align: right;
+}
+
+/* 차이율 / 가격판정 */
+.result-table th:nth-child(14),
+.result-table th:nth-child(15),
+.result-table td:nth-child(14),
+.result-table td:nth-child(15) {
+  min-width: 90px;
+  text-align: center;
+}
+
+/* 모바일 */
+@media (max-width: 900px) {
+  .dashboard-header,
+  .upload-section,
+  .result-section {
+    width: calc(100% - 24px);
+  }
+
+  .upload-area {
+    grid-template-columns: 1fr !important;
+  }
+}
