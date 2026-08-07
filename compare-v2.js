@@ -862,3 +862,51 @@ function getComparisonSourceLabel(
 
   return sourceType;
 }
+
+/**
+ * 주문번호·판매번호 비교용 정리
+ */
+function normalizeCompareValue(
+  value
+) {
+  return String(
+    value ?? ''
+  )
+    .replace(/\.0$/, '')
+    .replace(/\s+/g, '')
+    .trim()
+    .toUpperCase();
+}
+
+
+/**
+ * 실제 비교 파일 표시
+ */
+function getComparisonTargetLabel(
+  preferredType,
+  actualSourceType
+) {
+  const preferredLabel =
+    getComparisonSourceLabel(
+      preferredType
+    );
+
+  const actualLabel =
+    getComparisonSourceLabel(
+      actualSourceType
+    );
+
+  if (
+    preferredType ===
+    actualSourceType
+  ) {
+    return actualLabel;
+  }
+
+  return (
+    actualLabel +
+    ' (발주서 표기: ' +
+    preferredLabel +
+    ')'
+  );
+}
