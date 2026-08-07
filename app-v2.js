@@ -146,7 +146,7 @@ function updateUploadStatus() {
     ).filter(Boolean).length;
 
   const allSelected =
-    selectedCount === 4;
+    selectedCount === 3;
 
   if (startButton) {
     startButton.disabled =
