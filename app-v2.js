@@ -41,6 +41,11 @@ function initializeApp() {
     'direct'
   );
 
+  connectFileInput(
+  'policyFile',
+  'policy'
+);
+  
   const startButton =
     document.getElementById(
       'startButton'
