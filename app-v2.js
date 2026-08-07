@@ -1343,3 +1343,28 @@ function normalizeComparisonSearchText(
     .replace(/\s+/g, '')
     .toUpperCase();
 }
+
+/**
+ * 정산금액 숫자 변환
+ */
+function normalizeSettlementAmount(
+  value
+) {
+  const cleanedValue =
+    String(
+      value ?? ''
+    )
+      .replace(/,/g, '')
+      .replace(/원/g, '')
+      .replace(/\s+/g, '')
+      .trim();
+
+  const numberValue =
+    Number(cleanedValue);
+
+  return Number.isFinite(
+    numberValue
+  )
+    ? numberValue
+    : 0;
+}
