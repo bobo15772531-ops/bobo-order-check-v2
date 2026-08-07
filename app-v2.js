@@ -282,6 +282,9 @@ async function handleStartButton() {
     excelData.direct =
       result.direct;
 
+    excelData.policy =
+  result.policy;
+
     excelData.purchase.standardRows =
   standardizeExcelRows(
     excelData.purchase,
