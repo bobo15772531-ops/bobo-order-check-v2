@@ -291,8 +291,10 @@ console.log(
   comparisonResults
 );
 
-    renderExcelReadSummary();
+renderExcelReadSummary();
+renderComparisonResults();
 
+    
   } catch (error) {
     console.error(error);
 
