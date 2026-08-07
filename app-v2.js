@@ -1368,3 +1368,86 @@ function normalizeSettlementAmount(
     ? numberValue
     : 0;
 }
+
+/**
+ * 발주서 행 번호 기준 정산금액 조회
+ */
+function getSettlementByPurchaseRowNumber(
+  purchaseRowNumber
+) {
+  const purchaseRows =
+    excelData.purchase &&
+    Array.isArray(
+      excelData.purchase.standardRows
+    )
+      ? excelData.purchase.standardRows
+      : [];
+
+  const matchedRow =
+    purchaseRows.find(
+      row =>
+        String(
+          row.excelRowNumber
+        ) ===
+        String(
+          purchaseRowNumber
+        )
+    );
+
+  if (!matchedRow) {
+    return 0;
+  }
+
+  return Number(
+    matchedRow.normalized
+      .settlement
+  ) || 0;
+}
+
+
+/**
+ * 발주서 전체 정산금액 합계
+ *
+ * 검수 결과가 두 행으로 나뉘어도
+ * 발주서 원본 행은 한 번만 합산합니다.
+ */
+function calculateTotalSettlementAmount() {
+  const purchaseRows =
+    excelData.purchase &&
+    Array.isArray(
+      excelData.purchase.standardRows
+    )
+      ? excelData.purchase.standardRows
+      : [];
+
+  return purchaseRows.reduce(
+    (
+      total,
+      row
+    ) =>
+      total +
+      (
+        Number(
+          row.normalized
+            .settlement
+        ) || 0
+      ),
+    0
+  );
+}
+
+
+/**
+ * 원화 표시
+ */
+function formatCurrency(
+  value
+) {
+  return new Intl
+    .NumberFormat(
+      'ko-KR'
+    )
+    .format(
+      Number(value) || 0
+    ) + '원';
+}
