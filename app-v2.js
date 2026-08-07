@@ -367,6 +367,9 @@ function resetUploadedFiles() {
   excelData.online = null;
   excelData.direct = null;
 
+  comparisonResults = [];
+activeComparisonFilter = 'all';
+
   [
     'purchaseFile',
     'onlineFile',
