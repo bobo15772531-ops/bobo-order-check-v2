@@ -1396,9 +1396,13 @@ function renderComparisonTable(
 </td>
 
 <td>
-  ${escapeHtml(
-    result.priceStatus || ''
-  )}
+  <span
+    class="price-status ${priceStatusClass}"
+  >
+    ${escapeHtml(
+      result.priceStatus || ''
+    )}
+  </span>
 </td>
 
 <td>
