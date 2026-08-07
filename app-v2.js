@@ -382,13 +382,15 @@ function escapeHtml(
  * 업로드 파일과 읽은 엑셀 데이터 초기화
  */
 function resetUploadedFiles() {
-  selectedFiles.purchase = null;
-  selectedFiles.online = null;
-  selectedFiles.direct = null;
+ selectedFiles.purchase = null;
+selectedFiles.online = null;
+selectedFiles.direct = null;
+selectedFiles.policy = null;
 
-  excelData.purchase = null;
-  excelData.online = null;
-  excelData.direct = null;
+excelData.purchase = null;
+excelData.online = null;
+excelData.direct = null;
+excelData.policy = null;
 
   comparisonResults = [];
 activeComparisonFilter = 'all';
