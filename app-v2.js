@@ -1144,6 +1144,14 @@ function renderComparisonTable(
       </td>
 
       <td>
+  ${formatCurrency(
+    getSettlementByPurchaseRowNumber(
+      result.purchaseRowNumber
+    )
+  )}
+</td>
+
+      <td>
         ${escapeHtml(
           result.purchaseRowNumber
         )}
