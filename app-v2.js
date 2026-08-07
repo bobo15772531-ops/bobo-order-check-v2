@@ -455,9 +455,9 @@ function renderExcelReadSummary() {
     'status-success';
 
   status.innerHTML = `
-    <strong>
-      엑셀 4개 읽기 완료
-    </strong>
+   <strong>
+  발주 파일 3개 + 정책가 자동연동 완료
+</strong>
 
     <br><br>
 
