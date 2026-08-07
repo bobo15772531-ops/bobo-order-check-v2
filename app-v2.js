@@ -65,6 +65,8 @@ if (resetButton) {
     resetUploadedFiles
   );
 }
+
+  bindComparisonResultEvents();
   updateUploadStatus();
 }
 
