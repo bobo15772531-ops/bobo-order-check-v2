@@ -254,6 +254,24 @@ async function handleStartButton() {
     excelData.direct =
       result.direct;
 
+    excelData.purchase.standardRows =
+  standardizeExcelRows(
+    excelData.purchase,
+    'purchase'
+  );
+
+excelData.online.standardRows =
+  standardizeExcelRows(
+    excelData.online,
+    'online'
+  );
+
+excelData.direct.standardRows =
+  standardizeExcelRows(
+    excelData.direct,
+    'direct'
+  );
+
     renderExcelReadSummary();
 
   } catch (error) {
