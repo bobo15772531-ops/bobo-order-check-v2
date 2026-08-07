@@ -2186,3 +2186,169 @@ function formatDownloadDateTime(
     )
     .format(date);
 }
+
+/**
+ * 정책가 모델 인덱스 생성
+ */
+function createPolicyPriceIndex() {
+  const policyRows =
+    excelData.policy &&
+    Array.isArray(
+      excelData.policy.standardRows
+    )
+      ? excelData.policy.standardRows
+      : [];
+
+  const index =
+    new Map();
+
+  policyRows.forEach(
+    row => {
+      const modelKey =
+        row.normalized.model;
+
+      if (!modelKey) {
+        return;
+      }
+
+      index.set(
+        modelKey,
+        row
+      );
+    }
+  );
+
+  return index;
+}
+
+
+/**
+ * 검수 결과에 가격 비교정보 추가
+ */
+function attachPolicyPriceComparison() {
+  const policyIndex =
+    createPolicyPriceIndex();
+
+  comparisonResults =
+    comparisonResults.map(
+      result => {
+        const purchaseRow =
+          getPurchaseRowByExcelRowNumber(
+            result.purchaseRowNumber
+          );
+
+        if (!purchaseRow) {
+          return {
+            ...result,
+
+            policyPrice: 0,
+            priceDifference: 0,
+            priceDifferenceRate: 0,
+            priceStatus: '발주서 정보 없음',
+            policySelectionReason: ''
+          };
+        }
+
+        const modelKey =
+          purchaseRow.normalized.model;
+
+        const policyRow =
+          policyIndex.get(
+            modelKey
+          );
+
+        const settlementAmount =
+          Number(
+            purchaseRow.normalized
+              .settlement
+          ) || 0;
+
+        if (!policyRow) {
+          return {
+            ...result,
+
+            policyPrice: 0,
+            priceDifference: 0,
+            priceDifferenceRate: 0,
+            priceStatus: '정책가 없음',
+            policySelectionReason: ''
+          };
+        }
+
+        const policyPrice =
+          Number(
+            policyRow.normalized
+              .policyPrice
+          ) || 0;
+
+        const priceDifference =
+          settlementAmount -
+          policyPrice;
+
+        const priceDifferenceRate =
+          policyPrice > 0
+            ? (
+                priceDifference /
+                policyPrice
+              ) * 100
+            : 0;
+
+        let priceStatus =
+          '가격 확인';
+
+        if (
+          priceDifference === 0
+        ) {
+          priceStatus =
+            '정상';
+        }
+
+        return {
+          ...result,
+
+          policyPrice,
+          priceDifference,
+          priceDifferenceRate,
+          priceStatus,
+
+          policySelectionReason:
+            policyRow.selectionReason || '',
+
+          policyCategory:
+            policyRow.category || '',
+
+          policyOperation:
+            policyRow.operation || ''
+        };
+      }
+    );
+}
+
+
+/**
+ * 발주서 행번호로 원본 발주행 찾기
+ */
+function getPurchaseRowByExcelRowNumber(
+  purchaseRowNumber
+) {
+  const purchaseRows =
+    excelData.purchase &&
+    Array.isArray(
+      excelData.purchase.standardRows
+    )
+      ? excelData.purchase.standardRows
+      : [];
+
+  return (
+    purchaseRows.find(
+      row =>
+        String(
+          row.excelRowNumber
+        ) ===
+        String(
+          purchaseRowNumber
+        )
+    ) ||
+    null
+  );
+}
