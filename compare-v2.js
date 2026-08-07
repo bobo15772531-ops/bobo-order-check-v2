@@ -440,7 +440,7 @@ function comparePurchaseRow({
     );
 
     reasons.push(
-      '모델 불일치'
+      '모델/세트 구성 확인'
     );
 
     return {
