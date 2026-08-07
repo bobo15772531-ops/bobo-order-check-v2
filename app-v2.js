@@ -1349,6 +1349,7 @@ function renderComparisonTable(
       </td>
 
       <td>
+<td>
   ${formatCurrency(
     getSettlementByPurchaseRowNumber(
       result.purchaseRowNumber
@@ -1356,11 +1357,50 @@ function renderComparisonTable(
   )}
 </td>
 
-      <td>
-        ${escapeHtml(
-          result.purchaseRowNumber
-        )}
-      </td>
+<td>
+  ${
+    result.priceStatus ===
+    '정책가 없음'
+      ? '-'
+      : formatCurrency(
+          result.policyPrice
+        )
+  }
+</td>
+
+<td>
+  ${
+    result.priceStatus ===
+    '정책가 없음'
+      ? '-'
+      : formatSignedCurrency(
+          result.priceDifference
+        )
+  }
+</td>
+
+<td>
+  ${
+    result.priceStatus ===
+    '정책가 없음'
+      ? '-'
+      : formatPercentage(
+          result.priceDifferenceRate
+        )
+  }
+</td>
+
+<td>
+  ${escapeHtml(
+    result.priceStatus || ''
+  )}
+</td>
+
+<td>
+  ${escapeHtml(
+    result.purchaseRowNumber
+  )}
+</td>
     `;
 
     tableBody.appendChild(row);
