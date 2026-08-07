@@ -1492,3 +1492,510 @@ function formatCurrency(
       Number(value) || 0
     ) + '원';
 }
+
+/**
+ * 검수 결과 엑셀 다운로드
+ */
+function downloadComparisonExcel() {
+  if (
+    typeof XLSX === 'undefined'
+  ) {
+    alert(
+      '엑셀 라이브러리를 불러오지 못했습니다.'
+    );
+
+    return;
+  }
+
+  if (
+    !Array.isArray(
+      comparisonResults
+    ) ||
+    comparisonResults.length === 0
+  ) {
+    alert(
+      '먼저 파일 3개를 업로드하고 검수를 실행해 주세요.'
+    );
+
+    return;
+  }
+
+  try {
+    const summary =
+      calculateComparisonSummary();
+
+    const totalSettlementAmount =
+      calculateTotalSettlementAmount();
+
+    /**
+     * 검수 요약 시트
+     */
+    const summaryRows = [
+      [
+        '구분',
+        '건수 또는 금액'
+      ],
+      [
+        '발주서 총 정산금액',
+        totalSettlementAmount
+      ],
+      [
+        '총 검수 항목',
+        summary.total
+      ],
+      [
+        '정상',
+        summary.normal
+      ],
+      [
+        '온라인 누락',
+        summary.onlineMissing
+      ],
+      [
+        '직배 누락',
+        summary.directMissing
+      ],
+      [
+        '모델/세트 구성 확인',
+        summary.modelMismatch
+      ],
+      [
+        '수량 불일치',
+        summary.quantityMismatch
+      ],
+      [
+        '중복 의심',
+        summary.duplicate
+      ],
+      [],
+      [
+        '발주서 파일',
+        selectedFiles.purchase
+          ? selectedFiles.purchase.name
+          : ''
+      ],
+      [
+        '온라인 파일',
+        selectedFiles.online
+          ? selectedFiles.online.name
+          : ''
+      ],
+      [
+        '직배 파일',
+        selectedFiles.direct
+          ? selectedFiles.direct.name
+          : ''
+      ],
+      [
+        '검수 일시',
+        formatDownloadDateTime(
+          new Date()
+        )
+      ]
+    ];
+
+    /**
+     * 전체 결과 행
+     */
+    const resultRows =
+      comparisonResults.map(
+        (
+          result,
+          index
+        ) => {
+          const settlementAmount =
+            getSettlementByPurchaseRowNumber(
+              result.purchaseRowNumber
+            );
+
+          return {
+            순번:
+              index + 1,
+
+            판정:
+              result.status ===
+              'normal'
+                ? '정상'
+                : '확인 필요',
+
+            오류유형:
+              convertCategoryLabels(
+                result.categories
+              ),
+
+            오류사유:
+              result.reason || '',
+
+            비교대상:
+              result.target || '',
+
+            판매번호:
+              result.saleNumber || '',
+
+            주문번호:
+              result.orderNumber || '',
+
+            발주모델:
+              result.purchaseModel || '',
+
+            비교모델:
+              result.compareModel || '',
+
+            발주수량:
+              Number(
+                result.purchaseQuantity
+              ) || 0,
+
+            비교수량:
+              Number(
+                result.compareQuantity
+              ) || 0,
+
+            정산금액:
+              settlementAmount,
+
+            발주서행:
+              result.purchaseRowNumber || '',
+
+            비교파일행:
+              result.compareRowNumbers || ''
+          };
+        }
+      );
+
+    const normalRows =
+      resultRows.filter(
+        row =>
+          row.판정 === '정상'
+      );
+
+    const errorRows =
+      resultRows.filter(
+        row =>
+          row.판정 !== '정상'
+      );
+
+    /**
+     * 엑셀 워크북 생성
+     */
+    const workbook =
+      XLSX.utils.book_new();
+
+    const summarySheet =
+      XLSX.utils.aoa_to_sheet(
+        summaryRows
+      );
+
+    const errorSheet =
+      XLSX.utils.json_to_sheet(
+        errorRows
+      );
+
+    const normalSheet =
+      XLSX.utils.json_to_sheet(
+        normalRows
+      );
+
+    const allResultSheet =
+      XLSX.utils.json_to_sheet(
+        resultRows
+      );
+
+    /**
+     * 열 너비 설정
+     */
+    summarySheet['!cols'] = [
+      {
+        wch: 28
+      },
+      {
+        wch: 34
+      }
+    ];
+
+    const resultColumnWidths = [
+      { wch: 8 },
+      { wch: 12 },
+      { wch: 26 },
+      { wch: 38 },
+      { wch: 28 },
+      { wch: 18 },
+      { wch: 20 },
+      { wch: 26 },
+      { wch: 36 },
+      { wch: 12 },
+      { wch: 12 },
+      { wch: 18 },
+      { wch: 12 },
+      { wch: 18 }
+    ];
+
+    errorSheet['!cols'] =
+      resultColumnWidths;
+
+    normalSheet['!cols'] =
+      resultColumnWidths;
+
+    allResultSheet['!cols'] =
+      resultColumnWidths;
+
+    /**
+     * 정산금액 숫자 서식
+     */
+    applySettlementNumberFormat(
+      summarySheet,
+      1
+    );
+
+    applySettlementColumnFormat(
+      errorSheet
+    );
+
+    applySettlementColumnFormat(
+      normalSheet
+    );
+
+    applySettlementColumnFormat(
+      allResultSheet
+    );
+
+    /**
+     * 시트 추가
+     */
+    XLSX.utils.book_append_sheet(
+      workbook,
+      summarySheet,
+      '검수요약'
+    );
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      errorSheet,
+      '오류내역'
+    );
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      normalSheet,
+      '정상내역'
+    );
+
+    XLSX.utils.book_append_sheet(
+      workbook,
+      allResultSheet,
+      '전체결과'
+    );
+
+    const fileName =
+      'BOBO_발주검수결과_' +
+      formatDownloadFileDate(
+        new Date()
+      ) +
+      '.xlsx';
+
+    XLSX.writeFile(
+      workbook,
+      fileName
+    );
+
+  } catch (error) {
+    console.error(
+      '검수 결과 다운로드 오류:',
+      error
+    );
+
+    alert(
+      '검수 결과 엑셀 생성 중 오류가 발생했습니다.\n' +
+      error.message
+    );
+  }
+}
+
+
+/**
+ * 검수 유형 표시명 변환
+ */
+function convertCategoryLabels(
+  categories
+) {
+  if (
+    !Array.isArray(
+      categories
+    ) ||
+    categories.length === 0
+  ) {
+    return '';
+  }
+
+  const labelMap = {
+    onlineMissing:
+      '온라인 누락',
+
+    directMissing:
+      '직배 누락',
+
+    purchaseMissing:
+      '발주서 누락',
+
+    saleNumberMismatch:
+      '판매번호 불일치',
+
+    modelMismatch:
+      '모델/세트 구성 확인',
+
+    quantityMismatch:
+      '수량 불일치',
+
+    duplicate:
+      '중복 의심'
+  };
+
+  return categories
+    .map(
+      category =>
+        labelMap[category] ||
+        category
+    )
+    .join(', ');
+}
+
+
+/**
+ * 요약 시트 정산금액 표시 형식
+ */
+function applySettlementNumberFormat(
+  worksheet,
+  rowIndex
+) {
+  const cellAddress =
+    XLSX.utils.encode_cell({
+      r: rowIndex,
+      c: 1
+    });
+
+  if (
+    worksheet[cellAddress]
+  ) {
+    worksheet[cellAddress].z =
+      '#,##0"원"';
+  }
+}
+
+
+/**
+ * 결과 시트의 정산금액 열 형식
+ */
+function applySettlementColumnFormat(
+  worksheet
+) {
+  if (
+    !worksheet ||
+    !worksheet['!ref']
+  ) {
+    return;
+  }
+
+  const range =
+    XLSX.utils.decode_range(
+      worksheet['!ref']
+    );
+
+  /*
+   * 정산금액은 12번째 열
+   * A=0 기준으로 L=11
+   */
+  const settlementColumnIndex = 11;
+
+  for (
+    let rowIndex = 1;
+    rowIndex <= range.e.r;
+    rowIndex += 1
+  ) {
+    const cellAddress =
+      XLSX.utils.encode_cell({
+        r: rowIndex,
+        c: settlementColumnIndex
+      });
+
+    if (
+      worksheet[cellAddress]
+    ) {
+      worksheet[cellAddress].z =
+        '#,##0"원"';
+    }
+  }
+}
+
+
+/**
+ * 다운로드 파일명용 날짜
+ */
+function formatDownloadFileDate(
+  date
+) {
+  const year =
+    date.getFullYear();
+
+  const month =
+    String(
+      date.getMonth() + 1
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const day =
+    String(
+      date.getDate()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const hour =
+    String(
+      date.getHours()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  const minute =
+    String(
+      date.getMinutes()
+    ).padStart(
+      2,
+      '0'
+    );
+
+  return (
+    year +
+    month +
+    day +
+    '_' +
+    hour +
+    minute
+  );
+}
+
+
+/**
+ * 검수 일시 표시
+ */
+function formatDownloadDateTime(
+  date
+) {
+  return new Intl
+    .DateTimeFormat(
+      'ko-KR',
+      {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit',
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      }
+    )
+    .format(date);
+}
