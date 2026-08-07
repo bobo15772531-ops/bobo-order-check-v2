@@ -1301,6 +1301,18 @@ function renderComparisonTable(
         ? '정상'
         : '오류';
 
+    const priceStatusClass =
+  result.priceStatus === '정상'
+    ? 'price-normal'
+    : result.priceStatus === '정산가 높음'
+      ? 'price-high'
+      : result.priceStatus === '정산가 낮음'
+        ? 'price-low'
+        : result.priceStatus === '정책가 없음'
+          ? 'price-missing'
+          : '';
+    
+
     row.innerHTML = `
       <td>
         ${escapeHtml(statusLabel)}
