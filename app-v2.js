@@ -785,6 +785,11 @@ function standardizeExcelRows(
           )
       };
 
+      settlement:
+  normalizeSettlementAmount(
+    standardRow.settlement
+  )
+
       return standardRow;
     }
   );
