@@ -7,9 +7,11 @@ console.log(
  * 주문 비교 엔진
  */
 
-
 /**
  * 전체 검수 실행
+ *
+ * 발주서에 명시된 온라인 주문번호와
+ * 직배 주문번호만 비교 대상으로 사용합니다.
  */
 function runOrderComparison(
   purchaseRows,
@@ -46,13 +48,9 @@ function runOrderComparison(
         purchaseRow.normalized
           .directOrderNumber;
 
-      const generalOrderNumber =
-        purchaseRow.normalized
-          .orderNumber;
-
       /*
-       * 온라인 주문번호가 있으면
-       * 온라인 파일과 비교
+       * 발주서 온라인 주문번호가 있는 행만
+       * 온라인 주문 파일과 비교합니다.
        */
       if (onlineOrderNumber) {
         results.push(
@@ -60,10 +58,13 @@ function runOrderComparison(
             purchaseRow,
             sourceType:
               'online',
+
             expectedOrderNumber:
               onlineOrderNumber,
+
             sourceIndex:
               onlineIndex,
+
             usedRowIds:
               usedOnlineRowIds
           })
@@ -71,8 +72,8 @@ function runOrderComparison(
       }
 
       /*
-       * 직배 주문번호가 있으면
-       * 직배 파일과 비교
+       * 발주서 직배 주문번호가 있는 행만
+       * 직배 주문 파일과 비교합니다.
        */
       if (directOrderNumber) {
         results.push(
@@ -80,10 +81,13 @@ function runOrderComparison(
             purchaseRow,
             sourceType:
               'direct',
+
             expectedOrderNumber:
               directOrderNumber,
+
             sourceIndex:
               directIndex,
+
             usedRowIds:
               usedDirectRowIds
           })
@@ -91,52 +95,25 @@ function runOrderComparison(
       }
 
       /*
-       * 온라인·직배 주문번호가
-       * 둘 다 없는 경우
+       * 온라인 주문번호와 직배 주문번호가
+       * 모두 없는 발주서 행은 검수 대상에서 제외합니다.
+       *
+       * 일반 주문번호로 온라인·직배를 찾지 않습니다.
        */
-      if (
-        !onlineOrderNumber &&
-        !directOrderNumber
-      ) {
-        compareGeneralOrderNumber({
-          results,
-          purchaseRow,
-          generalOrderNumber,
-          onlineIndex,
-          directIndex,
-          usedOnlineRowIds,
-          usedDirectRowIds
-        });
-      }
     }
   );
 
   /*
-   * 온라인·직배에는 있지만
-   * 발주서에서 사용되지 않은 행
+   * 온라인·직배 파일의 나머지 행을
+   * 자동으로 발주서 누락 처리하지 않습니다.
+   *
+   * 이 파일들은 당일 발주서보다 더 넓은
+   * 기간이나 주문 범위를 포함할 수 있기 때문입니다.
    */
-  appendUnmatchedSourceRows({
-    results,
-    sourceRows:
-      onlineRows,
-    usedRowIds:
-      usedOnlineRowIds,
-    sourceType:
-      'online'
-  });
-
-  appendUnmatchedSourceRows({
-    results,
-    sourceRows:
-      directRows,
-    usedRowIds:
-      usedDirectRowIds,
-    sourceType:
-      'direct'
-  });
 
   return results;
 }
+
 
 
 /**
