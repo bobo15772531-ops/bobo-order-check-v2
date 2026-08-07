@@ -586,3 +586,121 @@ input {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ========================================
+   Dashboard 전체 화면 균형
+======================================== */
+
+body {
+  margin: 0;
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.dashboard-container,
+.container,
+main {
+  width: min(1500px, calc(100% - 48px));
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* 업로드 3칸 균등 배치 */
+.upload-area {
+  display: grid !important;
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr)) !important;
+  gap: 20px;
+  width: 100%;
+}
+
+.upload-box {
+  width: 100%;
+  min-width: 0;
+  box-sizing: border-box;
+}
+
+/* 업로드 영역 */
+.upload-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* 결과 영역 */
+.result-section {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* KPI 카드 전체폭 */
+.kpi-grid {
+  width: 100%;
+}
+
+/* 결과 테이블 */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.result-table {
+  width: 100%;
+  min-width: 1450px;
+  border-collapse: collapse;
+}
+
+/* 열 제목 한 줄 찌그러짐 방지 */
+.result-table th {
+  white-space: nowrap;
+  text-align: center;
+}
+
+/* 데이터 셀 */
+.result-table td {
+  vertical-align: middle;
+}
+
+/* 가격 상태 배지 */
+.price-status {
+  display: inline-block;
+  min-width: 70px;
+  padding: 5px 9px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.price-normal {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.price-high {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.price-low {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.price-missing {
+  color: #b45309;
+  background: #fef3c7;
+}
+
+/* 태블릿/작은 화면 */
+@media (max-width: 900px) {
+  .dashboard-container,
+  .container,
+  main {
+    width: calc(100% - 24px);
+  }
+
+  .upload-area {
+    grid-template-columns: 1fr !important;
+  }
+}
