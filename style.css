@@ -516,3 +516,32 @@ input {
   }
 }
 
+/* 가격 검수 상태 */
+
+.price-status {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 999px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.price-normal {
+  color: #047857;
+  background: #d1fae5;
+}
+
+.price-high {
+  color: #1d4ed8;
+  background: #dbeafe;
+}
+
+.price-low {
+  color: #b91c1c;
+  background: #fee2e2;
+}
+
+.price-missing {
+  color: #b45309;
+  background: #fef3c7;
+}
