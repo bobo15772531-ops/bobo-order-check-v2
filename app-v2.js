@@ -726,6 +726,12 @@ function standardizeExcelRows(
             headerMap.quantity
           ),
 
+        settlement:
+  getMappedCellValue(
+    row,
+    headerMap.settlement
+  ),
+        
         recipient:
           getMappedCellValue(
             row,
