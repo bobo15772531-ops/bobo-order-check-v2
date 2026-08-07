@@ -7,7 +7,8 @@ console.log('app-v2.js 로드 완료');
 const selectedFiles = {
   purchase: null,
   online: null,
-  direct: null
+  direct: null,
+  policy: null
 };
 
 const excelData = {
