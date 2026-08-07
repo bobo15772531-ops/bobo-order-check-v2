@@ -118,58 +118,42 @@ function runOrderComparison(
 
 /**
  * 비교 파일 인덱스 생성
+ *
+ * 주문번호를 1차 검색키로 사용합니다.
+ * 판매번호는 주문을 찾은 후 별도로 검증합니다.
  */
 function createComparisonIndex(
   rows,
   sourceType
 ) {
-  const byOrderKey =
-    new Map();
+  const index = new Map();
 
   rows.forEach(row => {
-    const rowId =
-      sourceType +
-      ':' +
-      row.excelRowNumber;
-
-    row.comparisonRowId =
-      rowId;
-
-    const key =
-      createOrderMatchKey(
-        row.normalized
-          .saleNumber,
-        row.normalized
-          .orderNumber
+    const orderNumber =
+      normalizeCompareValue(
+        row.normalized.orderNumber
       );
 
-    if (
-      !row.normalized
-        .saleNumber ||
-      !row.normalized
-        .orderNumber
-    ) {
+    if (!orderNumber) {
       return;
     }
 
-    if (
-      !byOrderKey.has(key)
-    ) {
-      byOrderKey.set(
-        key,
+    if (!index.has(orderNumber)) {
+      index.set(
+        orderNumber,
         []
       );
     }
 
-    byOrderKey
-      .get(key)
-      .push(row);
+    index
+      .get(orderNumber)
+      .push({
+        ...row,
+        sourceType
+      });
   });
 
-  return {
-    rows,
-    byOrderKey
-  };
+  return index;
 }
 
 
