@@ -872,6 +872,117 @@ return standardRow;
   );
 }
 
+/**
+ * 정책가 RawData 표준화
+ */
+function standardizePolicyRows(
+  excelFile
+) {
+  const headerMap =
+    createHeaderMap(
+      excelFile,
+      'policy'
+    );
+
+  const requiredFields = [
+    'model',
+    'policyPrice'
+  ];
+
+  const missingFields =
+    requiredFields.filter(
+      fieldName =>
+        headerMap[fieldName] === -1
+    );
+
+  if (
+    missingFields.length > 0
+  ) {
+    throw new Error(
+      '정책가 필수 헤더 누락: ' +
+      missingFields.join(', ')
+    );
+  }
+
+  return excelFile.rawRows
+    .map(
+      (
+        row,
+        index
+      ) => {
+        const standardRow = {
+          sourceType:
+            'policy',
+
+          excelRowNumber:
+            excelFile.headerRowNumber +
+            index +
+            1,
+
+          policyMonth:
+            getMappedCellValue(
+              row,
+              headerMap.policyMonth
+            ),
+
+          category:
+            getMappedCellValue(
+              row,
+              headerMap.category
+            ),
+
+          sourceSheet:
+            getMappedCellValue(
+              row,
+              headerMap.sourceSheet
+            ),
+
+          model:
+            getMappedCellValue(
+              row,
+              headerMap.model
+            ),
+
+          policyPrice:
+            getMappedCellValue(
+              row,
+              headerMap.policyPrice
+            ),
+
+          selectionReason:
+            getMappedCellValue(
+              row,
+              headerMap.selectionReason
+            ),
+
+          operation:
+            getMappedCellValue(
+              row,
+              headerMap.operation
+            )
+        };
+
+        standardRow.normalized = {
+          model:
+            normalizeModelName(
+              standardRow.model
+            ),
+
+          policyPrice:
+            normalizeSettlementAmount(
+              standardRow.policyPrice
+            )
+        };
+
+        return standardRow;
+      }
+    )
+    .filter(
+      row =>
+        row.normalized.model &&
+        row.normalized.policyPrice > 0
+    );
+}
 
 /**
  * 열 번호에 해당하는 셀 값 추출
