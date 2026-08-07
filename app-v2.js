@@ -66,6 +66,18 @@ if (resetButton) {
   );
 }
 
+  const downloadButton =
+  document.getElementById(
+    'downloadButton'
+  );
+
+if (downloadButton) {
+  downloadButton.addEventListener(
+    'click',
+    downloadComparisonExcel
+  );
+}
+  
   bindComparisonResultEvents();
   updateUploadStatus();
 }
