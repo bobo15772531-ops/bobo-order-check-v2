@@ -279,8 +279,8 @@ if (
       result.direct;
 
     excelData.policy =
-  result.policy;
-
+  await loadPolicyDataFromApi();
+  
     excelData.purchase.standardRows =
   standardizeExcelRows(
     excelData.purchase,
