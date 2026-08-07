@@ -14,7 +14,8 @@ const selectedFiles = {
 const excelData = {
   purchase: null,
   online: null,
-  direct: null
+  direct: null,
+  policy: null
 };
 
 let comparisonResults = [];
