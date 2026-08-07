@@ -636,9 +636,41 @@ function createHeaderMap(
         '수령인',
         '받는사람'
       ],
-      orderDate: [
+           orderDate: [
         '주문일자',
         '주문 일자'
+      ]
+    },
+
+    policy: {
+      policyMonth: [
+        '정책월'
+      ],
+
+      category: [
+        '카테고리'
+      ],
+
+      sourceSheet: [
+        '원본시트'
+      ],
+
+      model: [
+        '모델명',
+        '모델'
+      ],
+
+      policyPrice: [
+        '적용순판가',
+        '순판가'
+      ],
+
+      selectionReason: [
+        '선택기준'
+      ],
+
+      operation: [
+        '운영'
       ]
     }
   };
