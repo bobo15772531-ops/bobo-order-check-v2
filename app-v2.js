@@ -1348,8 +1348,7 @@ function renderComparisonTable(
         )}
       </td>
 
-      <td>
-<td>
+   <td>
   ${formatCurrency(
     getSettlementByPurchaseRowNumber(
       result.purchaseRowNumber
