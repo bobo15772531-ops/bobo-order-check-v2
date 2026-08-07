@@ -62,8 +62,33 @@ async function readExcelFile(
     );
   }
 
-  const sheetName =
+  let sheetName;
+
+/*
+ * 정책가 파일은
+ * 정책가_RawData 시트를 우선 사용
+ */
+if (fileType === 'policy') {
+  sheetName =
+    workbook.SheetNames.find(
+      name =>
+        String(name)
+          .replace(/\s+/g, '')
+          .toUpperCase() ===
+        '정책가_RAWDATA'.toUpperCase()
+          .replace(/\s+/g, '')
+    );
+
+  if (!sheetName) {
+    throw new Error(
+      '정책가_RawData 시트를 찾지 못했습니다.'
+    );
+  }
+
+} else {
+  sheetName =
     workbook.SheetNames[0];
+}
 
   const worksheet =
     workbook.Sheets[
