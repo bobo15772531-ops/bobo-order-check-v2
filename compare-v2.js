@@ -267,20 +267,29 @@ function compareGeneralOrderNumber({
   }
 }
 
-
 /**
  * 발주서 한 행 비교
+ *
+ * 주문번호로 먼저 검색한 다음
+ * 판매번호, 모델, 수량을 검증합니다.
  */
 function comparePurchaseRow({
   purchaseRow,
-  sourceType,
   expectedOrderNumber,
-  sourceIndex,
-  usedRowIds
+  preferredType,
+  primaryIndex,
+  secondaryIndex
 }) {
-  const saleNumber =
-    purchaseRow.normalized
-      .saleNumber;
+  const normalizedOrderNumber =
+    normalizeCompareValue(
+      expectedOrderNumber
+    );
+
+  const purchaseSaleNumber =
+    normalizeCompareValue(
+      purchaseRow.normalized
+        .saleNumber
+    );
 
   const purchaseModel =
     purchaseRow.normalized
@@ -290,45 +299,63 @@ function comparePurchaseRow({
     purchaseRow.normalized
       .quantity;
 
-  const orderKey =
-    createOrderMatchKey(
-      saleNumber,
-      expectedOrderNumber
-    );
+  /*
+   * 우선 파일에서 주문번호 검색
+   */
+  let orderCandidates =
+    primaryIndex.get(
+      normalizedOrderNumber
+    ) || [];
 
-  const orderCandidates =
-    sourceIndex
-      .byOrderKey
-      .get(orderKey) ||
-    [];
-
-  const targetLabel =
-    getComparisonSourceLabel(
-      sourceType
-    );
+  let actualSourceType =
+    preferredType;
 
   /*
-   * 판매번호 + 주문번호를
-   * 찾지 못한 경우
+   * 우선 파일에 없으면
+   * 다른 파일에서 다시 검색
    */
   if (
     orderCandidates.length === 0
   ) {
+    orderCandidates =
+      secondaryIndex.get(
+        normalizedOrderNumber
+      ) || [];
+
+    actualSourceType =
+      preferredType === 'online'
+        ? 'direct'
+        : 'online';
+  }
+
+  /*
+   * 온라인과 직배 어디에도 없는 경우
+   */
+  if (
+    orderCandidates.length === 0
+  ) {
+    const missingCategory =
+      preferredType === 'online'
+        ? 'onlineMissing'
+        : 'directMissing';
+
     return {
       status: 'error',
 
       categories: [
-        sourceType === 'online'
-          ? 'onlineMissing'
-          : 'directMissing'
+        missingCategory
       ],
 
       reason:
-        targetLabel +
-        ' 파일 누락',
+        getComparisonSourceLabel(
+          preferredType
+        ) +
+        ' 및 대체 파일에서 주문번호를 찾지 못했습니다.',
 
       target:
-        targetLabel,
+        getComparisonSourceLabel(
+          preferredType
+        ),
 
       saleNumber:
         purchaseRow.saleNumber,
@@ -352,36 +379,62 @@ function comparePurchaseRow({
     };
   }
 
+  const categories = [];
+  const reasons = [];
+
   /*
-   * 판매번호 + 주문번호가 같은 후보 중
-   * 모델명 전체가 같은 행 검색
+   * 주문번호로 찾은 행 중
+   * 판매번호가 같은 행 확인
+   */
+  const saleMatchedCandidates =
+    orderCandidates.filter(
+      sourceRow =>
+        normalizeCompareValue(
+          sourceRow.normalized
+            .saleNumber
+        ) ===
+        purchaseSaleNumber
+    );
+
+  /*
+   * 판매번호가 같은 행이 있으면
+   * 그 행만 모델·수량 비교에 사용합니다.
+   *
+   * 판매번호가 모두 다르면
+   * 주문번호 후보 전체를 사용하고
+   * 판매번호 불일치로 표시합니다.
+   */
+  const comparisonCandidates =
+    saleMatchedCandidates.length > 0
+      ? saleMatchedCandidates
+      : orderCandidates;
+
+  if (
+    saleMatchedCandidates.length === 0
+  ) {
+    categories.push(
+      'saleNumberMismatch'
+    );
+
+    reasons.push(
+      '판매번호 불일치'
+    );
+  }
+
+  /*
+   * 모델명 전체가 같은 행 확인
    */
   const modelCandidates =
-    orderCandidates.filter(
+    comparisonCandidates.filter(
       sourceRow =>
         sourceRow.normalized
           .model ===
         purchaseModel
     );
 
-  const categories = [];
-  const reasons = [];
-
-  /*
-   * 모델명이 같은 행이 없으면
-   * 모델 불일치
-   */
   if (
     modelCandidates.length === 0
   ) {
-    orderCandidates.forEach(
-      row => {
-        usedRowIds.add(
-          row.comparisonRowId
-        );
-      }
-    );
-
     categories.push(
       'modelMismatch'
     );
@@ -393,13 +446,18 @@ function comparePurchaseRow({
     return {
       status: 'error',
 
-      categories,
+      categories:
+        [...new Set(categories)],
 
       reason:
-        reasons.join(' / '),
+        [...new Set(reasons)]
+          .join(' / '),
 
       target:
-        targetLabel,
+        getComparisonTargetLabel(
+          preferredType,
+          actualSourceType
+        ),
 
       saleNumber:
         purchaseRow.saleNumber,
@@ -412,35 +470,27 @@ function comparePurchaseRow({
 
       compareModel:
         getUniqueModelNames(
-          orderCandidates
+          comparisonCandidates
         ).join(', '),
 
       purchaseQuantity,
 
       compareQuantity:
         sumComparisonQuantity(
-          orderCandidates
+          comparisonCandidates
         ),
 
       purchaseRowNumber:
         purchaseRow.excelRowNumber,
 
       compareRowNumbers:
-        orderCandidates
+        comparisonCandidates
           .map(row =>
             row.excelRowNumber
           )
           .join(', ')
     };
   }
-
-  modelCandidates.forEach(
-    row => {
-      usedRowIds.add(
-        row.comparisonRowId
-      );
-    }
-  );
 
   const compareQuantity =
     sumComparisonQuantity(
@@ -461,8 +511,11 @@ function comparePurchaseRow({
   }
 
   /*
-   * 같은 판매번호·주문번호·모델이
-   * 여러 행이면 중복 의심
+   * 동일 주문번호·판매번호·모델이
+   * 여러 행이면 중복 여부 확인
+   *
+   * 수량 합계가 발주 수량과 일치하더라도
+   * 여러 행으로 나뉘어 있음을 표시합니다.
    */
   if (
     modelCandidates.length > 1
@@ -478,21 +531,59 @@ function comparePurchaseRow({
     );
   }
 
+  /*
+   * 원래 예상한 파일이 아니라
+   * 다른 파일에서 발견된 경우 안내
+   */
+  if (
+    actualSourceType !==
+    preferredType
+  ) {
+    reasons.unshift(
+      getComparisonSourceLabel(
+        preferredType
+      ) +
+      ' 번호가 ' +
+      getComparisonSourceLabel(
+        actualSourceType
+      ) +
+      ' 파일에서 확인됨'
+    );
+  }
+
+  const uniqueCategories =
+    [...new Set(categories)];
+
+  const uniqueReasons =
+    [...new Set(reasons)];
+
   return {
     status:
-      categories.length === 0
+      uniqueCategories.length === 0
         ? 'normal'
         : 'error',
 
-    categories,
+    categories:
+      uniqueCategories,
 
     reason:
-      categories.length === 0
-        ? '정상 일치'
-        : reasons.join(' / '),
+      uniqueReasons.length === 0
+        ? (
+            actualSourceType ===
+            preferredType
+              ? '정상 일치'
+              : getComparisonSourceLabel(
+                  actualSourceType
+                ) +
+                ' 파일에서 정상 확인'
+          )
+        : uniqueReasons.join(' / '),
 
     target:
-      targetLabel,
+      getComparisonTargetLabel(
+        preferredType,
+        actualSourceType
+      ),
 
     saleNumber:
       purchaseRow.saleNumber,
