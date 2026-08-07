@@ -2400,6 +2400,7 @@ if (
           ...result,
 
           policyPrice,
+          policyTotalPrice,
           priceDifference,
           priceDifferenceRate,
           priceStatus,
