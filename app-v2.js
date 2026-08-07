@@ -401,7 +401,6 @@ function resetUploadedFiles() {
  selectedFiles.purchase = null;
 selectedFiles.online = null;
 selectedFiles.direct = null;
-selectedFiles.policy = null;
 
 excelData.purchase = null;
 excelData.online = null;
@@ -411,11 +410,11 @@ excelData.policy = null;
   comparisonResults = [];
 activeComparisonFilter = 'all';
 
- [
+cyFile'
+[
   'purchaseFile',
   'onlineFile',
-  'directFile',
-  'policyFile'
+  'directFile'
 ]
    .forEach(inputId => {
     const input =
