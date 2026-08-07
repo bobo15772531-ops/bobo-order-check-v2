@@ -16,6 +16,8 @@ const excelData = {
   direct: null
 };
 
+let comparisonResults = [];
+
 document.addEventListener(
   'DOMContentLoaded',
   initializeApp
