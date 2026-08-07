@@ -1,4 +1,8 @@
 console.log('app-v2.js 로드 완료');
+
+const POLICY_API_URL =
+  'https://script.google.com/macros/s/AKfycbwlUYD6JWCj2C_QnjJa4AkCe5Ul0QRt3ghp72Dm8KlyqM4dzWJC5xlgq_c4qaYMeTptdw/exec';
+
 /**
  * BOBO 발주 검수 Dashboard V2
  * V2-01 파일 업로드
