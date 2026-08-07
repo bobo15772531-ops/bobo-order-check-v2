@@ -147,7 +147,7 @@ function updateUploadStatus() {
     ).filter(Boolean).length;
 
   const allSelected =
-    selectedCount === 3;
+    selectedCount === 4;
 
   if (startButton) {
     startButton.disabled =
@@ -156,7 +156,7 @@ function updateUploadStatus() {
     startButton.textContent =
       allSelected
         ? '검수 시작'
-        : `파일 ${selectedCount}/3 선택`;
+        : `파일 ${selectedCount}/4 선택`;
   }
 
   if (!status) {
@@ -190,7 +190,7 @@ function updateUploadStatus() {
 
   status.innerHTML = `
     <strong>
-      파일 3개 선택 완료
+      파일 4개 선택 완료
     </strong>
     <br>
     발주서:
