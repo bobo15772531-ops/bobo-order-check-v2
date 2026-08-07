@@ -1285,7 +1285,7 @@ function renderComparisonTable(
     tableBody.innerHTML = `
       <tr>
         <td
-          colspan="10"
+          colspan="15"
           class="empty-table"
         >
           검수 결과가 없습니다.
