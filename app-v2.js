@@ -885,3 +885,254 @@ function getFileTypeLabel(
 
   return fileType;
 }
+
+/**
+ * 검수 결과 화면 출력
+ */
+function renderComparisonResults() {
+  const resultSection =
+    document.getElementById(
+      'resultSection'
+    );
+
+  if (resultSection) {
+    resultSection.hidden = false;
+  }
+
+  const summary =
+    calculateComparisonSummary();
+
+  setTextContent(
+    'totalCount',
+    formatNumber(
+      summary.total
+    ) + '건'
+  );
+
+  setTextContent(
+    'normalCount',
+    formatNumber(
+      summary.normal
+    ) + '건'
+  );
+
+  setTextContent(
+    'onlineMissingCount',
+    formatNumber(
+      summary.onlineMissing
+    ) + '건'
+  );
+
+  setTextContent(
+    'directMissingCount',
+    formatNumber(
+      summary.directMissing
+    ) + '건'
+  );
+
+  setTextContent(
+    'modelMismatchCount',
+    formatNumber(
+      summary.modelMismatch
+    ) + '건'
+  );
+
+  setTextContent(
+    'quantityMismatchCount',
+    formatNumber(
+      summary.quantityMismatch
+    ) + '건'
+  );
+
+  setTextContent(
+    'duplicateCount',
+    formatNumber(
+      summary.duplicate
+    ) + '건'
+  );
+
+  renderComparisonTable(
+    comparisonResults
+  );
+}
+
+
+/**
+ * KPI 집계
+ */
+function calculateComparisonSummary() {
+  return {
+    total:
+      comparisonResults.length,
+
+    normal:
+      comparisonResults.filter(
+        result =>
+          result.status === 'normal'
+      ).length,
+
+    onlineMissing:
+      countComparisonCategory(
+        'onlineMissing'
+      ),
+
+    directMissing:
+      countComparisonCategory(
+        'directMissing'
+      ),
+
+    modelMismatch:
+      countComparisonCategory(
+        'modelMismatch'
+      ),
+
+    quantityMismatch:
+      countComparisonCategory(
+        'quantityMismatch'
+      ),
+
+    duplicate:
+      countComparisonCategory(
+        'duplicate'
+      )
+  };
+}
+
+
+/**
+ * 오류 유형별 개수
+ */
+function countComparisonCategory(
+  category
+) {
+  return comparisonResults.filter(
+    result =>
+      result.categories.includes(
+        category
+      )
+  ).length;
+}
+
+
+/**
+ * 결과 테이블 출력
+ */
+function renderComparisonTable(
+  results
+) {
+  const tableBody =
+    document.getElementById(
+      'resultTableBody'
+    );
+
+  if (!tableBody) {
+    return;
+  }
+
+  tableBody.innerHTML = '';
+
+  if (results.length === 0) {
+    tableBody.innerHTML = `
+      <tr>
+        <td
+          colspan="10"
+          class="empty-table"
+        >
+          검수 결과가 없습니다.
+        </td>
+      </tr>
+    `;
+
+    return;
+  }
+
+  results.forEach(result => {
+    const row =
+      document.createElement(
+        'tr'
+      );
+
+    const statusLabel =
+      result.status === 'normal'
+        ? '정상'
+        : '오류';
+
+    row.innerHTML = `
+      <td>
+        ${escapeHtml(statusLabel)}
+      </td>
+
+      <td>
+        ${escapeHtml(result.reason)}
+      </td>
+
+      <td>
+        ${escapeHtml(result.target)}
+      </td>
+
+      <td>
+        ${escapeHtml(result.saleNumber)}
+      </td>
+
+      <td>
+        ${escapeHtml(result.orderNumber)}
+      </td>
+
+      <td>
+        ${escapeHtml(result.purchaseModel)}
+      </td>
+
+      <td>
+        ${escapeHtml(result.compareModel)}
+      </td>
+
+      <td>
+        ${formatNumber(
+          result.purchaseQuantity
+        )}
+      </td>
+
+      <td>
+        ${formatNumber(
+          result.compareQuantity
+        )}
+      </td>
+
+      <td>
+        ${escapeHtml(
+          result.purchaseRowNumber
+        )}
+      </td>
+    `;
+
+    tableBody.appendChild(row);
+  });
+
+  setTextContent(
+    'resultCountText',
+    '검색 결과 ' +
+      formatNumber(
+        results.length
+      ) +
+      '건'
+  );
+}
+
+
+/**
+ * 지정 요소에 텍스트 입력
+ */
+function setTextContent(
+  elementId,
+  value
+) {
+  const element =
+    document.getElementById(
+      elementId
+    );
+
+  if (element) {
+    element.textContent =
+      value;
+  }
+}
