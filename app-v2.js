@@ -264,7 +264,7 @@ async function handleStartButton() {
       'status-loading';
 
     status.textContent =
-      '발주서, 온라인, 직배 파일을 읽고 있습니다.';
+      '발주서, 온라인, 직배, 정책가 파일을 읽고 있습니다.';
   }
 
   try {
