@@ -926,6 +926,16 @@ function renderComparisonResults() {
   const summary =
     calculateComparisonSummary();
 
+  const totalSettlementAmount =
+  calculateTotalSettlementAmount();
+
+setTextContent(
+  'totalSettlementAmount',
+  formatCurrency(
+    totalSettlementAmount
+  )
+);
+
   setTextContent(
     'totalCount',
     formatNumber(
