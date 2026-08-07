@@ -517,6 +517,11 @@ function createHeaderMap(
         '주문수량',
         '주문 수량'
       ],
+      settlement: [
+  '정산가',
+  '정산 금액',
+  '정산금액'
+],
       recipient: [
         '수령인',
         '인수자',
