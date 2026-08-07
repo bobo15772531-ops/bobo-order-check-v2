@@ -189,7 +189,7 @@ function updateUploadStatus() {
 
   status.innerHTML = `
     <strong>
-      파일 4개 선택 완료
+      파일 3개 선택 완료
     </strong>
     <br>
     발주서:
@@ -227,14 +227,13 @@ function getFileName(
  * 엑셀 파일 읽기 시작
  */
 async function handleStartButton() {
- if (
+if (
   !selectedFiles.purchase ||
   !selectedFiles.online ||
-  !selectedFiles.direct ||
-  !selectedFiles.policy
+  !selectedFiles.direct
 ) {
   setStatusError(
-    '파일 4개를 모두 선택해 주세요.'
+    '파일 3개를 모두 선택해 주세요.'
   );
 
   return;
