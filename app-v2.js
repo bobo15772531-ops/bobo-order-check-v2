@@ -274,6 +274,23 @@ excelData.direct.standardRows =
     'direct'
   );
 
+    comparisonResults =
+  runOrderComparison(
+    excelData.purchase
+      .standardRows,
+
+    excelData.online
+      .standardRows,
+
+    excelData.direct
+      .standardRows
+  );
+
+console.log(
+  '검수 결과:',
+  comparisonResults
+);
+
     renderExcelReadSummary();
 
   } catch (error) {
