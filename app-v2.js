@@ -410,7 +410,6 @@ excelData.policy = null;
   comparisonResults = [];
 activeComparisonFilter = 'all';
 
-cyFile'
 [
   'purchaseFile',
   'onlineFile',
